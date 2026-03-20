@@ -11,7 +11,7 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { serveStatic } from "hono/bun";
+import { dirname, join } from "node:path";
 
 const app = new Hono();
 
@@ -74,10 +74,22 @@ app.use("/*", async (c, next) => {
 });
 
 if (env.NODE_ENV === "production") {
-  // 静的アセット (JS / CSS / 画像など) を配信
-  app.use("/*", serveStatic({ root: "./web" }));
-  // SPA フォールバック: クライアントルーティング用に index.html を返す
-  app.use("/*", serveStatic({ path: "./web/index.html" }));
+  // import.meta.url はバンドル後も実行時のファイルパスを指す
+  // (例: /app/server/index.mjs) → ../web = /app/web
+  // CWD に依存しないため working_dir が違っても確実に解決できる
+  const webRoot = join(dirname(new URL(import.meta.url).pathname), "../web");
+
+  app.use("/*", async (c, _next) => {
+    const urlPath = new URL(c.req.url).pathname;
+    // ディレクトリトラバーサル防止
+    const safePath = urlPath.replace(/\.\./g, "").replace(/\/+/g, "/");
+    const file = Bun.file(join(webRoot, safePath));
+    if (await file.exists()) {
+      return new Response(file);
+    }
+    // SPA フォールバック: クライアントルーティング用に index.html を返す
+    return new Response(Bun.file(join(webRoot, "index.html")));
+  });
 } else {
   app.get("/", (c) => {
     return c.text("OK");
@@ -85,6 +97,12 @@ if (env.NODE_ENV === "production") {
 }
 
 // 未適用マイグレーションをアプリ起動前に実行する
+// 失敗してもサーバーは起動させる（DB 未作成など初回以外のエラーを防ぐ）
+try {
+  await runMigrations();
+} catch (e) {
+  console.error("[db] migration failed:", e);
+}
 await runMigrations();
 
 export default app;
