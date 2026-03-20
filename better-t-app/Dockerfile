@@ -35,6 +35,8 @@ COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
 COPY --from=builder /app/apps/web/dist ./web
 # バックエンド (バンドル済みサーバー)
 COPY --from=builder /app/apps/server/dist ./server
+# マイグレーション SQL ファイル
+COPY --from=builder /app/packages/db/src/migrations ./migrations
 # 外部依存ライブラリ (hono / better-auth / libsql 等)
 COPY --from=builder /app/node_modules ./node_modules
 

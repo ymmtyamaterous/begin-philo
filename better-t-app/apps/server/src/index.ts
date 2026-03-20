@@ -1,3 +1,4 @@
+import { runMigrations } from "@better-t-app/db";
 import { createContext } from "@better-t-app/api/context";
 import { appRouter } from "@better-t-app/api/routers/index";
 import { auth } from "@better-t-app/auth";
@@ -82,5 +83,8 @@ if (env.NODE_ENV === "production") {
     return c.text("OK");
   });
 }
+
+// 未適用マイグレーションをアプリ起動前に実行する
+await runMigrations();
 
 export default app;
