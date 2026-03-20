@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>哲学の庭 — 考えることを楽しむ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Shippori+Mincho:wght@400;600;800&family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1209;
+      --paper: #f5f0e8;
+      --aged: #e8dfc8;
+      --accent: #8b4513;
+      --gold: #c9a84c;
+      --muted: #7a6a52;
+      --light-muted: #b5a68a;
+      --red: #8b2020;
+      --green-dark: #2d4a2d;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif JP', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(245, 240, 232, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(139,69,19,0.15);
+    }
+
+    .logo {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.1em;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    nav a {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    nav a:hover { color: var(--accent); }
+    nav a:hover::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 4rem 6rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      font-weight: 300;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.15s ease both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 3rem;
+      font-weight: 300;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 1rem 2rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .hero-cta:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta-arrow { font-size: 1.1rem; }
+
+    .hero-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--aged) 0%, #d4c4a0 100%);
+    }
+
+    .hero-ornament {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      animation: fadeIn 1.2s 0.6s ease both;
+    }
+
+    .hero-ornament .greek {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(6rem, 12vw, 11rem);
+      font-style: italic;
+      color: rgba(139,69,19,0.12);
+      line-height: 1;
+      user-select: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .hero-ornament .circle-quote {
+      width: 320px;
+      height: 320px;
+      border: 1px solid rgba(139,69,19,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-ornament .inner-circle {
+      width: 240px;
+      height: 240px;
+      border: 1px dashed rgba(139,69,19,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .hero-quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    .hero-quote-source {
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--ink);
+      color: var(--paper);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .stat {
+      flex: 1;
+      max-width: 300px;
+      padding: 2rem 2.5rem;
+      border-right: 1px solid rgba(245,240,232,0.1);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-style: italic;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: rgba(245,240,232,0.5);
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 6rem 0; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 560px;
+    }
+
+    hr.ornament {
+      border: none;
+      width: 60px;
+      height: 1px;
+      background: var(--accent);
+      margin: 1.5rem 0;
+    }
+
+    /* ── LEARNING PATH ── */
+    .path-section { background: var(--aged); }
+
+    .path-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5px;
+      margin-top: 4rem;
+      background: rgba(139,69,19,0.15);
+    }
+
+    .path-card {
+      background: var(--paper);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .path-card:hover { background: var(--ink); }
+    .path-card:hover .path-title,
+    .path-card:hover .path-desc { color: var(--paper); }
+    .path-card:hover .path-num { color: var(--gold); }
+    .path-card:hover .path-tag { background: rgba(245,240,232,0.1); color: var(--paper); }
+
+    .path-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4rem;
+      font-style: italic;
+      color: rgba(139,69,19,0.12);
+      line-height: 1;
+      margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+
+    .path-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      transition: color 0.3s;
+    }
+
+    .path-desc {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--muted);
+      transition: color 0.3s;
+    }
+
+    .path-tag {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(139,69,19,0.2);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      transition: all 0.3s;
+    }
+
+    /* ── PHILOSOPHERS ── */
+    .philosophers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    .philosopher-card {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .philosopher-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid rgba(139,69,19,0.2);
+      margin: 0 auto 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-style: italic;
+      color: var(--accent);
+      background: var(--aged);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .philosopher-avatar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--ink);
+      border-radius: 50%;
+      transform: scale(0);
+      transition: transform 0.3s;
+    }
+
+    .philosopher-card:hover .philosopher-avatar::before { transform: scale(1); }
+    .philosopher-card:hover .philosopher-avatar { color: var(--gold); border-color: var(--ink); }
+
+    .philosopher-avatar span { position: relative; z-index: 1; transition: color 0.3s; }
+    .philosopher-card:hover .philosopher-avatar span { color: var(--gold); }
+
+    .philosopher-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .philosopher-era {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--light-muted);
+    }
+
+    .philosopher-region {
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-top: 0.25rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── THEMES SECTION ── */
+    .themes-section { background: var(--ink); }
+
+    .themes-section .section-title { color: var(--paper); }
+    .themes-section .section-desc { color: rgba(245,240,232,0.6); }
+    .themes-section .section-label { color: var(--gold); }
+    .themes-section hr.ornament { background: var(--gold); }
+
+    .themes-list {
+      margin-top: 4rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .theme-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+      cursor: pointer;
+      transition: padding-left 0.3s;
+    }
+
+    .theme-item:hover { padding-left: 1.5rem; }
+
+    .theme-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      color: var(--gold);
+      opacity: 0.4;
+    }
+
+    .theme-name {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--paper);
+    }
+
+    .theme-count {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.3);
+    }
+
+    /* ── QUOTE SECTION ── */
+    .quote-section {
+      background: var(--aged);
+      padding: 8rem 0;
+      text-align: center;
+    }
+
+    .big-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--ink);
+      max-width: 780px;
+      margin: 0 auto 2rem;
+    }
+
+    .quote-marks {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 6rem;
+      color: rgba(139,69,19,0.15);
+      line-height: 0.5;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .big-quote-source {
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ── ARTICLES ── */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .article-card {
+      background: var(--aged);
+      padding: 2rem;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .article-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .article-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,18,9,0.1); }
+    .article-card:hover::after { transform: scaleX(1); }
+
+    .article-card.featured { grid-row: span 2; display: flex; flex-direction: column; justify-content: flex-end; }
+
+    .article-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .article-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .article-card.featured .article-title { font-size: 1.5rem; }
+
+    .article-desc {
+      font-size: 0.83rem;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .article-meta {
+      margin-top: 1.25rem;
+      font-size: 0.72rem;
+      color: var(--light-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.6);
+      padding: 5rem 0 3rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+
+    .footer-brand .logo {
+      color: var(--paper);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .footer-desc {
+      font-size: 0.83rem;
+      line-height: 1.9;
+      color: rgba(245,240,232,0.45);
+    }
+
+    .footer-col-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 0.9rem;
+      color: var(--paper);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: rgba(245,240,232,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(245,240,232,0.08);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy { font-size: 0.78rem; color: rgba(245,240,232,0.25); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ── INTERSECTION OBSERVER ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── FREE BADGE ── */
+    .free-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--green-dark);
+      color: #a8d8a8;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-left: 1rem;
+      vertical-align: middle;
+    }
+
+    .free-badge::before { content: '✦'; font-size: 0.6rem; }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      margin-top: 2rem;
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.85rem 1.2rem;
+      border: 1px solid rgba(139,69,19,0.25);
+      background: rgba(255,255,255,0.6);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.85rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--light-muted); }
+
+    .search-btn {
+      padding: 0.85rem 1.4rem;
+      background: var(--accent);
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .search-btn:hover { background: var(--red); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 7rem 2rem 3rem; }
+      .path-grid { grid-template-columns: 1fr; }
+      .philosophers-grid { grid-template-columns: repeat(2, 1fr); }
+      .articles-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      header { padding: 1rem 1.5rem; }
+      nav { gap: 1.2rem; }
+      .container { padding: 0 1.5rem; }
+      .themes-section .container { padding: 0 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="logo">哲学の<span>庭</span></a>
+    <nav>
+      <a href="#path">学習コース</a>
+      <a href="#philosophers">哲学者</a>
+      <a href="#themes">テーマ</a>
+      <a href="#articles">読む</a>
+    </nav>
+    <span class="free-badge">完全無料</span>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">入門者のための哲学入門</p>
+      <h1 class="hero-title">
+        考えることは、<em>生きることだ。</em>
+      </h1>
+      <p class="hero-sub">
+        ソクラテスからニーチェまで、東洋から西洋まで。<br>
+        哲学の庭は、「問いを持つ」ことから始まる。<br>
+        難しい言葉は後回しでいい。まず、一緒に考えよう。
+      </p>
+      <div class="search-wrap">
+        <input class="search-input" type="text" placeholder="哲学者・テーマ・問いを検索…">
+        <button class="search-btn">🔍</button>
+      </div>
+      <br>
+      <a href="#path" class="hero-cta">学習を始める <span class="hero-cta-arrow">→</span></a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-ornament">
+        <div class="greek">φ</div>
+        <div class="circle-quote">
+          <div class="inner-circle">
+            <p class="hero-quote-text">
+              無知の知こそが、<br>真の知恵の始まりである
+            </p>
+            <p class="hero-quote-source">— ソクラテス</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-number">120+</div>
+      <div class="stat-label">哲学者</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">60+</div>
+      <div class="stat-label">テーマ別コース</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">300+</div>
+      <div class="stat-label">解説記事</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">∞</div>
+      <div class="stat-label">問いの数</div>
+    </div>
+  </div>
+
+  <!-- LEARNING PATH -->
+  <section class="path-section" id="path">
+    <div class="container">
+      <p class="section-label reveal">学習コース</p>
+      <h2 class="section-title reveal">どこから始めますか？</h2>
+      <hr class="ornament reveal">
+      <p class="section-desc reveal">あなたのペースで、あなたの疑問から。哲学に「正しい始め方」はありません。</p>
+
+      <div class="path-grid">
+        <div class="path-card reveal">
+          <div class="path-num">01</div>
+          <h3 class="path-title">哲学ってなに？</h3>
+          <p class="path-desc">「そもそも哲学とはどんな学問か」から始める超入門コース。難しい専門用語は使いません。</p>
+          <span class="path-tag">入門 · 30分</span>
+        </div>
+        <div class="path-card reveal">
+          <div class="path-num">02</div>
+          <h3 class="path-title">古代ギリシャの知恵</h3>
+          <p class="path-desc">ソクラテス、プラトン、アリストテレス。哲学の原点、古代の問いに触れる。</p>
+          <span class="path-tag">基礎 · 3時間</span>
+        </div>
+        <div class="path-card reveal">
+          <div class="path-num">03</div>
+          <h3 class="path-title">「私」とは何者か</h3>
+          <p class="path-desc">自己、意識、アイデンティティ。「自分」を疑うことで見えてくる哲学の核心。</p>
+          <span class="path-tag">基礎 · 2時間</span>
+        </div>
+        <div class="path-card reveal">
+          <div class="path-num">04</div>
+          <h3 class="path-title">倫理と善悪</h3>
+          <p class="path-desc">「正しい行い」とは？カントの義務論からミルの功利主義まで、道徳を考える。</p>
+          <span class="path-tag">中級 · 4時間</span>
+        </div>
+        <div class="path-card reveal">
+          <div class="path-num">05</div>
+          <h3 class="path-title">東洋の哲学</h3>
+          <p class="path-desc">孔子・老子・仏教思想。西洋とは異なる「考える軸」を知ることで視野が広がる。</p>
+          <span class="path-tag">中級 · 4時間</span>
+        </div>
+        <div class="path-card reveal">
+          <div class="path-num">06</div>
+          <h3 class="path-title">近現代哲学</h3>
+          <p class="path-desc">ニーチェ、サルトル、ハイデガー。現代の問いに直結する哲学者たちの思想。</p>
+          <span class="path-tag">応用 · 5時間</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-section">
+    <div class="container">
+      <span class="quote-marks">"</span>
+      <p class="big-quote reveal">
+        問い続けることをやめた者が、<br>考えることをやめた者である。
+      </p>
+      <p class="big-quote-source">— アルベルト・アインシュタイン</p>
+    </div>
+  </div>
+
+  <!-- PHILOSOPHERS -->
+  <section id="philosophers">
+    <div class="container">
+      <p class="section-label reveal">哲学者を知る</p>
+      <h2 class="section-title reveal">巨人たちの思想</h2>
+      <hr class="ornament reveal">
+      <p class="section-desc reveal">人類の知の遺産。代表的な哲学者の生涯と思想をわかりやすく解説します。</p>
+
+      <div class="philosophers-grid">
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>Σ</span></div>
+          <div class="philosopher-name">ソクラテス</div>
+          <div class="philosopher-era">紀元前470 – 399</div>
+          <div class="philosopher-region">古代ギリシャ</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>Π</span></div>
+          <div class="philosopher-name">プラトン</div>
+          <div class="philosopher-era">紀元前427 – 347</div>
+          <div class="philosopher-region">古代ギリシャ</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>Α</span></div>
+          <div class="philosopher-name">アリストテレス</div>
+          <div class="philosopher-era">紀元前384 – 322</div>
+          <div class="philosopher-region">古代ギリシャ</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>孔</span></div>
+          <div class="philosopher-name">孔子</div>
+          <div class="philosopher-era">紀元前551 – 479</div>
+          <div class="philosopher-region">中国</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>K</span></div>
+          <div class="philosopher-name">カント</div>
+          <div class="philosopher-era">1724 – 1804</div>
+          <div class="philosopher-region">ドイツ</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>N</span></div>
+          <div class="philosopher-name">ニーチェ</div>
+          <div class="philosopher-era">1844 – 1900</div>
+          <div class="philosopher-region">ドイツ</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>S</span></div>
+          <div class="philosopher-name">サルトル</div>
+          <div class="philosopher-era">1905 – 1980</div>
+          <div class="philosopher-region">フランス</div>
+        </div>
+        <div class="philosopher-card reveal">
+          <div class="philosopher-avatar"><span>老</span></div>
+          <div class="philosopher-name">老子</div>
+          <div class="philosopher-era">紀元前6世紀頃</div>
+          <div class="philosopher-region">中国</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THEMES -->
+  <section class="themes-section" id="themes">
+    <div class="container">
+      <p class="section-label reveal">テーマで探す</p>
+      <h2 class="section-title reveal">あなたの「なぜ」から始めよう</h2>
+      <hr class="ornament reveal" style="background: var(--gold);">
+      <p class="section-desc reveal">哲学は問いの学問。気になるテーマから自由に探索できます。</p>
+
+      <div class="themes-list">
+        <div class="theme-item reveal">
+          <span class="theme-num">01</span>
+          <span class="theme-name">存在とは何か（存在論）</span>
+          <span class="theme-count">12 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">02</span>
+          <span class="theme-name">知識と真理（認識論）</span>
+          <span class="theme-count">9 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">03</span>
+          <span class="theme-name">善と悪・道徳（倫理学）</span>
+          <span class="theme-count">15 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">04</span>
+          <span class="theme-name">美と芸術（美学）</span>
+          <span class="theme-count">8 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">05</span>
+          <span class="theme-name">社会・政治哲学</span>
+          <span class="theme-count">11 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">06</span>
+          <span class="theme-name">心・意識の哲学</span>
+          <span class="theme-count">10 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">07</span>
+          <span class="theme-name">死・時間・無常</span>
+          <span class="theme-count">7 記事</span>
+        </div>
+        <div class="theme-item reveal">
+          <span class="theme-num">08</span>
+          <span class="theme-name">自由意志と決定論</span>
+          <span class="theme-count">6 記事</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="articles">
+    <div class="container">
+      <p class="section-label reveal">最近の記事</p>
+      <h2 class="section-title reveal">読んで、考えよう</h2>
+      <hr class="ornament reveal">
+
+      <div class="articles-grid">
+        <div class="article-card featured reveal">
+          <div class="article-tag">特集 · 存在論</div>
+          <h3 class="article-title">「存在する」とはどういうことか——ハイデガーの問いを入門者向けに解説</h3>
+          <p class="article-desc">「なぜ何もないのではなく、何かがあるのか」——ハイデガーが投げかけた哲学史上最も深い問いに、わかりやすく迫る。</p>
+          <p class="article-meta">2024年12月 · 読了 10分</p>
+        </div>
+        <div class="article-card reveal">
+          <div class="article-tag">倫理学</div>
+          <h3 class="article-title">トロッコ問題で学ぶ功利主義と義務論の違い</h3>
+          <p class="article-desc">有名な思考実験から倫理学の核心へ。</p>
+          <p class="article-meta">2024年11月 · 読了 7分</p>
+        </div>
+        <div class="article-card reveal">
+          <div class="article-tag">東洋哲学</div>
+          <h3 class="article-title">老子の「無為自然」とはどんな生き方か</h3>
+          <p class="article-desc">「何もしないこと」が最大の行為である逆説。</p>
+          <p class="article-meta">2024年11月 · 読了 6分</p>
+        </div>
+        <div class="article-card reveal">
+          <div class="article-tag">近現代哲学</div>
+          <h3 class="article-title">ニーチェ「神は死んだ」を正確に理解する</h3>
+          <p class="article-desc">誤解されがちな言葉の真意に迫る。</p>
+          <p class="article-meta">2024年10月 · 読了 8分</p>
+        </div>
+        <div class="article-card reveal">
+          <div class="article-tag">認識論</div>
+          <h3 class="article-title">デカルトの「我思う、ゆえに我あり」入門</h3>
+          <p class="article-desc">哲学史上もっとも有名な一文の意味。</p>
+          <p class="article-meta">2024年10月 · 読了 5分</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">哲学の<span>庭</span></a>
+          <p class="footer-desc">「考える」ことを日常に。哲学の庭は入門者のために作られた、完全無料の哲学学習サイトです。</p>
+        </div>
+        <div>
+          <p class="footer-col-title">コンテンツ</p>
+          <ul class="footer-links">
+            <li><a href="#">学習コース</a></li>
+            <li><a href="#">哲学者一覧</a></li>
+            <li><a href="#">テーマ別</a></li>
+            <li><a href="#">用語集</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">東洋哲学</p>
+          <ul class="footer-links">
+            <li><a href="#">仏教思想</a></li>
+            <li><a href="#">儒教・孔子</a></li>
+            <li><a href="#">道教・老子</a></li>
+            <li><a href="#">日本の哲学</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">サイトについて</p>
+          <ul class="footer-links">
+            <li><a href="#">このサイトとは</a></li>
+            <li><a href="#">参考文献</a></li>
+            <li><a href="#">お問い合わせ</a></li>
+            <li><a href="#">プライバシー</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2024 哲学の庭 — すべてのコンテンツは無料で公開されています</p>
+        <p class="footer-copy">知を、すべての人へ</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for reveal animations
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Stagger grid children
+    document.querySelectorAll('.path-grid, .philosophers-grid, .articles-grid').forEach(grid => {
+      grid.querySelectorAll('.reveal').forEach((card, i) => {
+        card.style.transitionDelay = `${i * 0.07}s`;
+      });
+    });
+
+    // Quote cycling in hero
+    const quotes = [
+      { text: '無知の知こそが、真の知恵の始まりである', source: 'ソクラテス' },
+      { text: '人間は考える葦である', source: 'パスカル' },
+      { text: '我思う、ゆえに我あり', source: 'デカルト' },
+      { text: '神は死んだ', source: 'ニーチェ' },
+    ];
+    let qi = 0;
+    const qtEl = document.querySelector('.hero-quote-text');
+    const qsEl = document.querySelector('.hero-quote-source');
+
+    if (qtEl && qsEl) {
+      setInterval(() => {
+        qi = (qi + 1) % quotes.length;
+        qtEl.style.opacity = 0;
+        qsEl.style.opacity = 0;
+        setTimeout(() => {
+          qtEl.textContent = quotes[qi].text;
+          qsEl.textContent = '— ' + quotes[qi].source;
+          qtEl.style.opacity = 1;
+          qsEl.style.opacity = 1;
+        }, 400);
+        qtEl.style.transition = 'opacity 0.4s';
+        qsEl.style.transition = 'opacity 0.4s';
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
