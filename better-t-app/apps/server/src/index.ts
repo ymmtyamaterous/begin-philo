@@ -73,7 +73,6 @@ app.use("/*", async (c, next) => {
 });
 
 // ファイル拡張子 → Content-Type マップ
-// Bun.file().type は絶対パスでは空になる場合があるため明示的に指定する
 const MIME: Record<string, string> = {
   js: "text/javascript; charset=utf-8",
   mjs: "text/javascript; charset=utf-8",
@@ -93,20 +92,26 @@ const MIME: Record<string, string> = {
 };
 
 if (env.NODE_ENV === "production") {
-  // import.meta.url = file:///app/server/index.mjs → ../web = /app/web
-  // CWD に依存しないため compose.yml の working_dir が違っても安全
-  const webRoot = new URL("../web", import.meta.url).pathname;
+  // WORKDIR=/app で CMD が実行されるため process.cwd() = /app
+  // Dockerfile: COPY --from=builder /app/apps/web/dist ./web → /app/web
+  const webRoot = `${process.cwd()}/web`;
 
   app.use("/*", async (c) => {
     const reqPath = new URL(c.req.url).pathname;
-    const ext = reqPath.split(".").pop() ?? "";
-    const filePath = `${webRoot}${reqPath}`;
-    const file = Bun.file(filePath);
 
-    if (await file.exists()) {
-      // 拡張子から Content-Type を決定（MIME マップにない場合は Bun の検出値を使用）
-      const contentType = MIME[ext] ?? file.type ?? "application/octet-stream";
-      return new Response(file, { headers: { "Content-Type": contentType } });
+    // 拡張子がある場合のみ静的ファイルを試みる
+    // 拡張子なし (/, /dashboard 等) は SPA ルートとして index.html にフォールバック
+    const hasExtension = /\.[a-zA-Z0-9]+$/.test(reqPath);
+
+    if (hasExtension) {
+      const filePath = `${webRoot}${reqPath}`;
+      const file = Bun.file(filePath);
+      if (await file.exists()) {
+        const ext = reqPath.split(".").pop()!.toLowerCase();
+        const contentType =
+          MIME[ext] ?? file.type ?? "application/octet-stream";
+        return new Response(file, { headers: { "Content-Type": contentType } });
+      }
     }
 
     // SPA フォールバック: クライアントルーティング用に index.html を返す
