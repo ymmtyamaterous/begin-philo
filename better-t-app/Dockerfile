@@ -49,4 +49,4 @@ COPY --from=builder /app/packages/db/src/migrations ./migrations
 COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 
 # CMD ["/usr/local/bin/bun", "server/index.mjs"]
-CMD ["/bun", "server/index.mjs"]
+CMD ["bun", "server/index.mjs"]
