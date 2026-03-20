@@ -5,5 +5,7 @@ export default defineConfig({
   format: "esm",
   outDir: "./dist",
   clean: true,
-  noExternal: [/@better-t-app\/.*/],
+  // libsql のみ external として残す（Rust native binary .node ファイルを持つため bundle 不可）
+  // better-auth / hono / drizzle-orm / @orpc/* 等の純粋 JS 依存はすべてバンドルに取り込む
+  noExternal: [/^(?!libsql(\/|$))/],
 });
