@@ -10,6 +10,7 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { serveStatic } from "hono/bun";
 
 const app = new Hono();
 
@@ -71,8 +72,15 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-app.get("/", (c) => {
-  return c.text("OK");
-});
+if (env.NODE_ENV === "production") {
+  // 静的アセット (JS / CSS / 画像など) を配信
+  app.use("/*", serveStatic({ root: "./web" }));
+  // SPA フォールバック: クライアントルーティング用に index.html を返す
+  app.use("/*", serveStatic({ path: "./web/index.html" }));
+} else {
+  app.get("/", (c) => {
+    return c.text("OK");
+  });
+}
 
 export default app;
