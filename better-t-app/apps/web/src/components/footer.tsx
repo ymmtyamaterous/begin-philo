@@ -26,6 +26,13 @@ export function Footer() {
           <p className="text-xs mt-4" style={{ color: "var(--light-muted)" }}>
             © 2026 bphilo. All rights reserved.
           </p>
+          <p className="text-xs" style={{ color: "var(--light-muted)", lineHeight: "1.6" }}>
+            ⚠️ 本サイトのコンテンツ（記事・解説・用語集等）は
+            <br />
+            生成AIによって作成されています。
+            <br />
+            内容の正確性については十分ご確認ください。
+          </p>
         </div>
 
         {/* コンテンツ */}
