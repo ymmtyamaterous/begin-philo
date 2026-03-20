@@ -21,6 +21,9 @@ RUN bun install --frozen-lockfile
 # ── Stage 3: Builder ─────────────────────────────────────────────────────────
 # node_modules はインストールレイヤーから、ソースは pruner から取得してビルド
 FROM oven/bun:1 AS builder
+# Vite ビルド時に静的埋め込みされる値。--build-arg で渡す
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
 WORKDIR /app
 COPY --from=installer /app/ .
 COPY --from=pruner /app/out/full/ .

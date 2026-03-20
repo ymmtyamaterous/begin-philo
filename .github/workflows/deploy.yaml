@@ -44,6 +44,8 @@ jobs:
                 context: ./better-t-app
                 push: true
                 tags: ${{ steps.meta.outputs.tags }}
+                build-args: |
+                  VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }}
                 # GHA のキャッシュバックエンドを利用する設定
                 cache-from: type=gha
                 cache-to: type=gha,mode=max
