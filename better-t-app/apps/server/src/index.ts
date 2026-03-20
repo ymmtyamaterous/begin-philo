@@ -11,7 +11,6 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { serveStatic } from "hono/bun";
 
 const app = new Hono();
 
@@ -73,16 +72,48 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
+// ファイル拡張子 → Content-Type マップ
+// Bun.file().type は絶対パスでは空になる場合があるため明示的に指定する
+const MIME: Record<string, string> = {
+  js: "text/javascript; charset=utf-8",
+  mjs: "text/javascript; charset=utf-8",
+  css: "text/css; charset=utf-8",
+  html: "text/html; charset=utf-8",
+  json: "application/json; charset=utf-8",
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  gif: "image/gif",
+  svg: "image/svg+xml",
+  ico: "image/x-icon",
+  woff: "font/woff",
+  woff2: "font/woff2",
+  ttf: "font/ttf",
+  webp: "image/webp",
+};
+
 if (env.NODE_ENV === "production") {
-  // new URL("../web", import.meta.url).pathname は CWD に依存せず
-  // バンドルファイルの実際の場所 (/app/server/index.mjs) から /app/web を指す
+  // import.meta.url = file:///app/server/index.mjs → ../web = /app/web
+  // CWD に依存しないため compose.yml の working_dir が違っても安全
   const webRoot = new URL("../web", import.meta.url).pathname;
 
-  // 静的アセット (JS / CSS / 画像など) を配信。root に絶対パスを渡すことで
-  // hono/bun の serveStatic が正しい MIME タイプを付与する
-  app.use("/*", serveStatic({ root: webRoot }));
-  // SPA フォールバック: クライアントルーティング用に index.html を返す
-  app.use("/*", serveStatic({ root: webRoot, path: "index.html" }));
+  app.use("/*", async (c) => {
+    const reqPath = new URL(c.req.url).pathname;
+    const ext = reqPath.split(".").pop() ?? "";
+    const filePath = `${webRoot}${reqPath}`;
+    const file = Bun.file(filePath);
+
+    if (await file.exists()) {
+      // 拡張子から Content-Type を決定（MIME マップにない場合は Bun の検出値を使用）
+      const contentType = MIME[ext] ?? file.type ?? "application/octet-stream";
+      return new Response(file, { headers: { "Content-Type": contentType } });
+    }
+
+    // SPA フォールバック: クライアントルーティング用に index.html を返す
+    return new Response(Bun.file(`${webRoot}/index.html`), {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  });
 } else {
   app.get("/", (c) => {
     return c.text("OK");
@@ -96,6 +127,5 @@ try {
 } catch (e) {
   console.error("[db] migration failed:", e);
 }
-await runMigrations();
 
 export default app;
