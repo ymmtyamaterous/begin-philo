@@ -9,13 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as GlossaryRouteImport } from './routes/glossary'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ThemesIndexRouteImport } from './routes/themes/index'
+import { Route as PhilosophersIndexRouteImport } from './routes/philosophers/index'
+import { Route as CoursesIndexRouteImport } from './routes/courses/index'
+import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
+import { Route as ThemesSlugRouteImport } from './routes/themes/$slug'
+import { Route as PhilosophersSlugRouteImport } from './routes/philosophers/$slug'
+import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
+import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
+import { Route as CoursesSlugLessonSlugRouteImport } from './routes/courses/$slug.$lessonSlug'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GlossaryRoute = GlossaryRouteImport.update({
+  id: '/glossary',
+  path: '/glossary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -28,44 +49,189 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ThemesIndexRoute = ThemesIndexRouteImport.update({
+  id: '/themes/',
+  path: '/themes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PhilosophersIndexRoute = PhilosophersIndexRouteImport.update({
+  id: '/philosophers/',
+  path: '/philosophers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThemesSlugRoute = ThemesSlugRouteImport.update({
+  id: '/themes/$slug',
+  path: '/themes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PhilosophersSlugRoute = PhilosophersSlugRouteImport.update({
+  id: '/philosophers/$slug',
+  path: '/philosophers/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesSlugRoute = CoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesSlugLessonSlugRoute = CoursesSlugLessonSlugRouteImport.update({
+  id: '/$lessonSlug',
+  path: '/$lessonSlug',
+  getParentRoute: () => CoursesSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$slug': typeof CoursesSlugRouteWithChildren
+  '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/themes/$slug': typeof ThemesSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
+  '/courses/': typeof CoursesIndexRoute
+  '/philosophers/': typeof PhilosophersIndexRoute
+  '/themes/': typeof ThemesIndexRoute
+  '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$slug': typeof CoursesSlugRouteWithChildren
+  '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/themes/$slug': typeof ThemesSlugRoute
+  '/articles': typeof ArticlesIndexRoute
+  '/courses': typeof CoursesIndexRoute
+  '/philosophers': typeof PhilosophersIndexRoute
+  '/themes': typeof ThemesIndexRoute
+  '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/search': typeof SearchRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/courses/$slug': typeof CoursesSlugRouteWithChildren
+  '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/themes/$slug': typeof ThemesSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
+  '/courses/': typeof CoursesIndexRoute
+  '/philosophers/': typeof PhilosophersIndexRoute
+  '/themes/': typeof ThemesIndexRoute
+  '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/glossary'
+    | '/login'
+    | '/search'
+    | '/articles/$slug'
+    | '/courses/$slug'
+    | '/philosophers/$slug'
+    | '/themes/$slug'
+    | '/articles/'
+    | '/courses/'
+    | '/philosophers/'
+    | '/themes/'
+    | '/courses/$slug/$lessonSlug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login'
-  id: '__root__' | '/' | '/dashboard' | '/login'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/glossary'
+    | '/login'
+    | '/search'
+    | '/articles/$slug'
+    | '/courses/$slug'
+    | '/philosophers/$slug'
+    | '/themes/$slug'
+    | '/articles'
+    | '/courses'
+    | '/philosophers'
+    | '/themes'
+    | '/courses/$slug/$lessonSlug'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/glossary'
+    | '/login'
+    | '/search'
+    | '/articles/$slug'
+    | '/courses/$slug'
+    | '/philosophers/$slug'
+    | '/themes/$slug'
+    | '/articles/'
+    | '/courses/'
+    | '/philosophers/'
+    | '/themes/'
+    | '/courses/$slug/$lessonSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  GlossaryRoute: typeof GlossaryRoute
   LoginRoute: typeof LoginRoute
+  SearchRoute: typeof SearchRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
+  CoursesSlugRoute: typeof CoursesSlugRouteWithChildren
+  PhilosophersSlugRoute: typeof PhilosophersSlugRoute
+  ThemesSlugRoute: typeof ThemesSlugRoute
+  ArticlesIndexRoute: typeof ArticlesIndexRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
+  PhilosophersIndexRoute: typeof PhilosophersIndexRoute
+  ThemesIndexRoute: typeof ThemesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/glossary': {
+      id: '/glossary'
+      path: '/glossary'
+      fullPath: '/glossary'
+      preLoaderRoute: typeof GlossaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -82,13 +248,98 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/themes/': {
+      id: '/themes/'
+      path: '/themes'
+      fullPath: '/themes/'
+      preLoaderRoute: typeof ThemesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/philosophers/': {
+      id: '/philosophers/'
+      path: '/philosophers'
+      fullPath: '/philosophers/'
+      preLoaderRoute: typeof PhilosophersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/': {
+      id: '/articles/'
+      path: '/articles'
+      fullPath: '/articles/'
+      preLoaderRoute: typeof ArticlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/themes/$slug': {
+      id: '/themes/$slug'
+      path: '/themes/$slug'
+      fullPath: '/themes/$slug'
+      preLoaderRoute: typeof ThemesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/philosophers/$slug': {
+      id: '/philosophers/$slug'
+      path: '/philosophers/$slug'
+      fullPath: '/philosophers/$slug'
+      preLoaderRoute: typeof PhilosophersSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/$slug': {
+      id: '/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof CoursesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/$slug/$lessonSlug': {
+      id: '/courses/$slug/$lessonSlug'
+      path: '/$lessonSlug'
+      fullPath: '/courses/$slug/$lessonSlug'
+      preLoaderRoute: typeof CoursesSlugLessonSlugRouteImport
+      parentRoute: typeof CoursesSlugRoute
+    }
   }
 }
+
+interface CoursesSlugRouteChildren {
+  CoursesSlugLessonSlugRoute: typeof CoursesSlugLessonSlugRoute
+}
+
+const CoursesSlugRouteChildren: CoursesSlugRouteChildren = {
+  CoursesSlugLessonSlugRoute: CoursesSlugLessonSlugRoute,
+}
+
+const CoursesSlugRouteWithChildren = CoursesSlugRoute._addFileChildren(
+  CoursesSlugRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  GlossaryRoute: GlossaryRoute,
   LoginRoute: LoginRoute,
+  SearchRoute: SearchRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
+  CoursesSlugRoute: CoursesSlugRouteWithChildren,
+  PhilosophersSlugRoute: PhilosophersSlugRoute,
+  ThemesSlugRoute: ThemesSlugRoute,
+  ArticlesIndexRoute: ArticlesIndexRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
+  PhilosophersIndexRoute: PhilosophersIndexRoute,
+  ThemesIndexRoute: ThemesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

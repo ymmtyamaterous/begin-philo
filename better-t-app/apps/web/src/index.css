@@ -1,1 +1,102 @@
 @import "@better-t-app/ui/globals.css";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700;800&family=Shippori+Mincho:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=DM+Serif+Display:ital@0;1&display=swap");
+
+:root {
+  --ink: #1a1209;
+  --paper: #f5f0e8;
+  --aged: #e8dfc8;
+  --accent: #8b4513;
+  --gold: #c9a84c;
+  --philo-muted: #7a6a52;
+  --light-muted: #b5a68a;
+  --red: #8b2020;
+  --green-dark: #2d4a2d;
+}
+
+body {
+  font-family: "Noto Serif JP", serif;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* stagger children */
+.stagger-children > *:nth-child(1) { transition-delay: 0.07s; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.14s; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.21s; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.28s; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.35s; }
+.stagger-children > *:nth-child(6) { transition-delay: 0.42s; }
+.stagger-children > *:nth-child(7) { transition-delay: 0.49s; }
+.stagger-children > *:nth-child(8) { transition-delay: 0.56s; }
+
+/* markdown prose */
+.prose-philo {
+  font-family: "Noto Serif JP", serif;
+  line-height: 1.9;
+  color: var(--ink);
+}
+.prose-philo h2 {
+  font-family: "Shippori Mincho", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+  color: var(--ink);
+}
+.prose-philo h3 {
+  font-family: "Shippori Mincho", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--ink);
+}
+.prose-philo p {
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+.prose-philo blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--philo-muted);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.1rem;
+}
+.prose-philo ul, .prose-philo ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.prose-philo li {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+.prose-philo strong {
+  font-weight: 700;
+  color: var(--accent);
+}
+
