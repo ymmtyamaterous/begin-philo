@@ -11,7 +11,7 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import { dirname, join } from "node:path";
+import { serveStatic } from "hono/bun";
 
 const app = new Hono();
 
@@ -74,22 +74,15 @@ app.use("/*", async (c, next) => {
 });
 
 if (env.NODE_ENV === "production") {
-  // import.meta.url はバンドル後も実行時のファイルパスを指す
-  // (例: /app/server/index.mjs) → ../web = /app/web
-  // CWD に依存しないため working_dir が違っても確実に解決できる
-  const webRoot = join(dirname(new URL(import.meta.url).pathname), "../web");
+  // new URL("../web", import.meta.url).pathname は CWD に依存せず
+  // バンドルファイルの実際の場所 (/app/server/index.mjs) から /app/web を指す
+  const webRoot = new URL("../web", import.meta.url).pathname;
 
-  app.use("/*", async (c, _next) => {
-    const urlPath = new URL(c.req.url).pathname;
-    // ディレクトリトラバーサル防止
-    const safePath = urlPath.replace(/\.\./g, "").replace(/\/+/g, "/");
-    const file = Bun.file(join(webRoot, safePath));
-    if (await file.exists()) {
-      return new Response(file);
-    }
-    // SPA フォールバック: クライアントルーティング用に index.html を返す
-    return new Response(Bun.file(join(webRoot, "index.html")));
-  });
+  // 静的アセット (JS / CSS / 画像など) を配信。root に絶対パスを渡すことで
+  // hono/bun の serveStatic が正しい MIME タイプを付与する
+  app.use("/*", serveStatic({ root: webRoot }));
+  // SPA フォールバック: クライアントルーティング用に index.html を返す
+  app.use("/*", serveStatic({ root: webRoot, path: "index.html" }));
 } else {
   app.get("/", (c) => {
     return c.text("OK");
