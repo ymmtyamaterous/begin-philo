@@ -34,7 +34,8 @@ RUN bun run build && \
     [ -n "$LIBSQL_SRC" ] && cp -r "$LIBSQL_SRC" /app/node_modules/libsql || true
 
 # ── Stage 4: Runner ──────────────────────────────────────────────────────────
-FROM gcr.io/distroless/cc-debian12
+# FROM gcr.io/distroless/cc-debian12
+FROM oven/bun:1-slim
 WORKDIR /app
 # Bun ランタイム
 COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
@@ -47,4 +48,5 @@ COPY --from=builder /app/packages/db/src/migrations ./migrations
 # libsql native binary のみ（その他の依存は tsdown バンドルに包含済み）
 COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 
-CMD ["/usr/local/bin/bun", "server/index.mjs"]
+# CMD ["/usr/local/bin/bun", "server/index.mjs"]
+CMD ["/bun", "server/index.mjs"]
