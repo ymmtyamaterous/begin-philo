@@ -30,7 +30,8 @@ COPY --from=pruner /app/out/full/ .
 RUN bun run build
 
 # ── Stage 4: Runner ──────────────────────────────────────────────────────────
-FROM gcr.io/distroless/cc-debian12
+# FROM gcr.io/distroless/cc-debian12
+FROM oven/bun:1-slim
 WORKDIR /app
 # Bun ランタイム
 COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
