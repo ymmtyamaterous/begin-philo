@@ -11,6 +11,7 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { serveStatic } from "hono/bun";
 
 const app = new Hono();
 
@@ -72,53 +73,13 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
-// ファイル拡張子 → Content-Type マップ
-const MIME: Record<string, string> = {
-  js: "text/javascript; charset=utf-8",
-  mjs: "text/javascript; charset=utf-8",
-  css: "text/css; charset=utf-8",
-  html: "text/html; charset=utf-8",
-  json: "application/json; charset=utf-8",
-  png: "image/png",
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  gif: "image/gif",
-  svg: "image/svg+xml",
-  ico: "image/x-icon",
-  woff: "font/woff",
-  woff2: "font/woff2",
-  ttf: "font/ttf",
-  webp: "image/webp",
-};
-
 if (env.NODE_ENV === "production") {
-  // WORKDIR=/app で CMD が実行されるため process.cwd() = /app
-  // Dockerfile: COPY --from=builder /app/apps/web/dist ./web → /app/web
-  const webRoot = `${process.cwd()}/web`;
-
-  app.use("/*", async (c) => {
-    const reqPath = new URL(c.req.url).pathname;
-
-    // 拡張子がある場合のみ静的ファイルを試みる
-    // 拡張子なし (/, /dashboard 等) は SPA ルートとして index.html にフォールバック
-    const hasExtension = /\.[a-zA-Z0-9]+$/.test(reqPath);
-
-    if (hasExtension) {
-      const filePath = `${webRoot}${reqPath}`;
-      const file = Bun.file(filePath);
-      if (await file.exists()) {
-        const ext = reqPath.split(".").pop()!.toLowerCase();
-        const contentType =
-          MIME[ext] ?? file.type ?? "application/octet-stream";
-        return new Response(file, { headers: { "Content-Type": contentType } });
-      }
-    }
-
-    // SPA フォールバック: クライアントルーティング用に index.html を返す
-    return new Response(Bun.file(`${webRoot}/index.html`), {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
-    });
-  });
+  // root は process.cwd() (/app) からの相対パスで指定することが重要。
+  // 絶対パスを渡すと hono/bun 内部で './' prefix が付加されパスが崩壊する。
+  // Dockerfile: WORKDIR /app かつ COPY dist ./web で /app/web に配置済み
+  app.use("/*", serveStatic({ root: "./web" }));
+  // SPA フォールバック: 残ったリクエストはクライアントルーティング用に index.html を返す
+  app.use("/*", serveStatic({ root: "./web", path: "index.html" }));
 } else {
   app.get("/", (c) => {
     return c.text("OK");
