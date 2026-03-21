@@ -49,10 +49,7 @@ export const rpcHandler = new RPCHandler(appRouter, {
   ],
 });
 
-// /rpc と /api-reference のみ context を作成する。
-// "/*" にすると /assets/*.js へのリクエストでも DB アクセスが発生し、
-// DB エラー時に JSON エラーが JS モジュールに返って Unexpected token ':' になるため。
-app.use("/rpc/*", async (c, next) => {
+app.use("/*", async (c, next) => {
   const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
@@ -63,12 +60,6 @@ app.use("/rpc/*", async (c, next) => {
   if (rpcResult.matched) {
     return c.newResponse(rpcResult.response.body, rpcResult.response);
   }
-
-  await next();
-});
-
-app.use("/api-reference/*", async (c, next) => {
-  const context = await createContext({ context: c });
 
   const apiResult = await apiHandler.handle(c.req.raw, {
     prefix: "/api-reference",
@@ -83,12 +74,10 @@ app.use("/api-reference/*", async (c, next) => {
 });
 
 if (env.NODE_ENV === "production") {
-  // root は process.cwd() (/app) からの相対パスで指定することが重要。
-  // 絶対パスを渡すと hono/bun 内部で './' prefix が付加されパスが崩壊する。
-  // Dockerfile: WORKDIR /app かつ COPY dist ./web で /app/web に配置済み
+  // 静的アセット (JS / CSS / 画像など) を配信
   app.use("/*", serveStatic({ root: "./web" }));
-  // SPA フォールバック: 残ったリクエストはクライアントルーティング用に index.html を返す
-  app.use("/*", serveStatic({ root: "./web", path: "index.html" }));
+  // SPA フォールバック: クライアントルーティング用に index.html を返す
+  app.use("/*", serveStatic({ path: "./web/index.html" }));
 } else {
   app.get("/", (c) => {
     return c.text("OK");
@@ -96,11 +85,6 @@ if (env.NODE_ENV === "production") {
 }
 
 // 未適用マイグレーションをアプリ起動前に実行する
-// 失敗してもサーバーは起動させる（DB 未作成など初回以外のエラーを防ぐ）
-try {
-  await runMigrations();
-} catch (e) {
-  console.error("[db] migration failed:", e);
-}
+await runMigrations();
 
 export default app;
