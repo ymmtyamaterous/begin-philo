@@ -41,7 +41,10 @@ RUN bun run build && \
     # libsql が内部で依存する @neon-rs/load （純粋 JS・ネイティブモジュールローダー）を抽出
     NEON_LOAD_SRC=$(find /app/node_modules/.bun -type d -name "load" -path "*/@neon-rs/load" 2>/dev/null | head -1) && \
     mkdir -p /app/node_modules/@neon-rs && \
-    [ -n "$NEON_LOAD_SRC" ] && cp -r "$NEON_LOAD_SRC" /app/node_modules/@neon-rs/load || true
+    [ -n "$NEON_LOAD_SRC" ] && cp -r "$NEON_LOAD_SRC" /app/node_modules/@neon-rs/load || true && \
+    # libsql が依存する detect-libc を抽出
+    DETECT_LIBC_SRC=$(find /app/node_modules/.bun -type d -name "detect-libc" 2>/dev/null | head -1) && \
+    [ -n "$DETECT_LIBC_SRC" ] && cp -r "$DETECT_LIBC_SRC" /app/node_modules/detect-libc || true
 
 # ── Stage 4: Runner ──────────────────────────────────────────────────────────
 FROM gcr.io/distroless/cc-debian12
@@ -62,6 +65,8 @@ COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 COPY --from=builder /app/node_modules/@libsql/linux-x64-gnu ./node_modules/@libsql/linux-x64-gnu
 # libsql が require する @neon-rs/load（純粋 JS・ネイティブモジュールローダー）
 COPY --from=builder /app/node_modules/@neon-rs ./node_modules/@neon-rs
+# libsql が依存する detect-libc
+COPY --from=builder /app/node_modules/detect-libc ./node_modules/detect-libc
 
 CMD ["/usr/local/bin/bun", "server/index.mjs"]
 # CMD ["bun", "server/index.mjs"]
