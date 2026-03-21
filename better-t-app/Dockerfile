@@ -37,7 +37,11 @@ RUN bun run build && \
     [ -n "$LIBSQL_SRC" ] && cp -r "$LIBSQL_SRC" /app/node_modules/libsql || true && \
     GNU_SRC=$(find /app/node_modules/.bun -maxdepth 4 -type d -name "linux-x64-gnu" | head -1) && \
     mkdir -p /app/node_modules/@libsql && \
-    [ -n "$GNU_SRC" ] && cp -r "$GNU_SRC" /app/node_modules/@libsql/linux-x64-gnu || true
+    [ -n "$GNU_SRC" ] && cp -r "$GNU_SRC" /app/node_modules/@libsql/linux-x64-gnu || true && \
+    # libsql が内部で依存する @neon-rs/load （純粋 JS・ネイティブモジュールローダー）を抽出
+    NEON_LOAD_SRC=$(find /app/node_modules/.bun -type d -name "load" -path "*/@neon-rs/load" 2>/dev/null | head -1) && \
+    mkdir -p /app/node_modules/@neon-rs && \
+    [ -n "$NEON_LOAD_SRC" ] && cp -r "$NEON_LOAD_SRC" /app/node_modules/@neon-rs/load || true
 
 # ── Stage 4: Runner ──────────────────────────────────────────────────────────
 FROM gcr.io/distroless/cc-debian12
@@ -56,6 +60,8 @@ COPY --from=builder /app/packages/db/dist/seed.mjs ./seed/seed.mjs
 # libsql JS ラッパー + linux-x64-gnu native binary（その他の依存は tsdown バンドルに包含済み）
 COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 COPY --from=builder /app/node_modules/@libsql/linux-x64-gnu ./node_modules/@libsql/linux-x64-gnu
+# libsql が require する @neon-rs/load（純粋 JS・ネイティブモジュールローダー）
+COPY --from=builder /app/node_modules/@neon-rs ./node_modules/@neon-rs
 
 CMD ["/usr/local/bin/bun", "server/index.mjs"]
 # CMD ["bun", "server/index.mjs"]
