@@ -49,7 +49,10 @@ export const rpcHandler = new RPCHandler(appRouter, {
   ],
 });
 
-app.use("/*", async (c, next) => {
+// /rpc と /api-reference のみ context を作成する。
+// "/*" にすると /assets/*.js へのリクエストでも DB アクセスが発生し、
+// DB エラー時に JSON エラーが JS モジュールに返って Unexpected token ':' になるため。
+app.use("/rpc/*", async (c, next) => {
   const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
@@ -60,6 +63,12 @@ app.use("/*", async (c, next) => {
   if (rpcResult.matched) {
     return c.newResponse(rpcResult.response.body, rpcResult.response);
   }
+
+  await next();
+});
+
+app.use("/api-reference/*", async (c, next) => {
+  const context = await createContext({ context: c });
 
   const apiResult = await apiHandler.handle(c.req.raw, {
     prefix: "/api-reference",
