@@ -28,6 +28,8 @@ WORKDIR /app
 COPY --from=installer /app/ .
 COPY --from=pruner /app/out/full/ .
 RUN bun run build && \
+    # seed スクリプトをバンドル（libsql のみ external として残す）
+    bun build --target=bun packages/db/src/seed.ts --outfile packages/db/dist/seed.mjs --external libsql && \
     # libsql は JS ラッパー + プラットフォーム固有 native binary の2パッケージ構成
     # tsdown が pure-JS 依存をすべてバンドルするため、runtime で必要なのはこの2パッケージのみ
     # .bun/ 配下の正規パス (libsql@x.y.z/node_modules/libsql) から直接コピー
@@ -49,6 +51,8 @@ COPY --from=builder /app/apps/web/dist ./web
 COPY --from=builder /app/apps/server/dist ./server
 # マイグレーション SQL ファイル
 COPY --from=builder /app/packages/db/src/migrations ./migrations
+# シードスクリプト（バンドル済み）
+COPY --from=builder /app/packages/db/dist/seed.mjs ./seed/seed.mjs
 # libsql JS ラッパー + linux-x64-gnu native binary（その他の依存は tsdown バンドルに包含済み）
 COPY --from=builder /app/node_modules/libsql ./node_modules/libsql
 COPY --from=builder /app/node_modules/@libsql/linux-x64-gnu ./node_modules/@libsql/linux-x64-gnu

@@ -1,4 +1,4 @@
-import { db } from "./index";
+import { db, runMigrations } from "./index";
 import {
   article,
   articleTheme,
@@ -690,6 +690,16 @@ const glossaryTerms = [
 
 async function seed() {
   console.log("🌱 Seeding database...");
+
+  // マイグレーションを実行（未適用のもののみ・冪等）
+  await runMigrations();
+
+  // 既にデータが存在する場合はスキップ（冪等性の確保）
+  const existing = await db.select().from(philosopher).limit(1);
+  if (existing.length > 0) {
+    console.log("⏭️  既にシードデータが存在します。スキップします。");
+    return;
+  }
 
   await db.delete(userBookmark);
   await db.delete(userLessonProgress);
