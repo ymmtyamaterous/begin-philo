@@ -49,7 +49,6 @@ function LessonPage() {
   }
 
   const lessonNumber = data.number;
-  const totalLessons = (data.prevLesson ? 1 : 0) + 1 + (data.nextLesson ? 1 : 0);
 
   return (
     <div style={{ backgroundColor: "var(--paper)", minHeight: "100vh" }}>

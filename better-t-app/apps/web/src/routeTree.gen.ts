@@ -22,7 +22,8 @@ import { Route as ThemesSlugRouteImport } from './routes/themes/$slug'
 import { Route as PhilosophersSlugRouteImport } from './routes/philosophers/$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
 import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
-import { Route as CoursesSlugLessonSlugRouteImport } from './routes/courses/$slug.$lessonSlug'
+import { Route as CoursesSlugIndexRouteImport } from './routes/courses/$slug/index'
+import { Route as CoursesSlugLessonSlugRouteImport } from './routes/courses/$slug/$lessonSlug'
 
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
@@ -89,6 +90,11 @@ const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
   path: '/articles/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesSlugIndexRoute = CoursesSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoursesSlugRoute,
+} as any)
 const CoursesSlugLessonSlugRoute = CoursesSlugLessonSlugRouteImport.update({
   id: '/$lessonSlug',
   path: '/$lessonSlug',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/philosophers/': typeof PhilosophersIndexRoute
   '/themes/': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
+  '/courses/$slug/': typeof CoursesSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -118,7 +125,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/articles/$slug': typeof ArticlesSlugRoute
-  '/courses/$slug': typeof CoursesSlugRouteWithChildren
   '/philosophers/$slug': typeof PhilosophersSlugRoute
   '/themes/$slug': typeof ThemesSlugRoute
   '/articles': typeof ArticlesIndexRoute
@@ -126,6 +132,7 @@ export interface FileRoutesByTo {
   '/philosophers': typeof PhilosophersIndexRoute
   '/themes': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
+  '/courses/$slug': typeof CoursesSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +150,7 @@ export interface FileRoutesById {
   '/philosophers/': typeof PhilosophersIndexRoute
   '/themes/': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
+  '/courses/$slug/': typeof CoursesSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +169,7 @@ export interface FileRouteTypes {
     | '/philosophers/'
     | '/themes/'
     | '/courses/$slug/$lessonSlug'
+    | '/courses/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -169,7 +178,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/search'
     | '/articles/$slug'
-    | '/courses/$slug'
     | '/philosophers/$slug'
     | '/themes/$slug'
     | '/articles'
@@ -177,6 +185,7 @@ export interface FileRouteTypes {
     | '/philosophers'
     | '/themes'
     | '/courses/$slug/$lessonSlug'
+    | '/courses/$slug'
   id:
     | '__root__'
     | '/'
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/philosophers/'
     | '/themes/'
     | '/courses/$slug/$lessonSlug'
+    | '/courses/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -304,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticlesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/$slug/': {
+      id: '/courses/$slug/'
+      path: '/'
+      fullPath: '/courses/$slug/'
+      preLoaderRoute: typeof CoursesSlugIndexRouteImport
+      parentRoute: typeof CoursesSlugRoute
+    }
     '/courses/$slug/$lessonSlug': {
       id: '/courses/$slug/$lessonSlug'
       path: '/$lessonSlug'
@@ -316,10 +333,12 @@ declare module '@tanstack/react-router' {
 
 interface CoursesSlugRouteChildren {
   CoursesSlugLessonSlugRoute: typeof CoursesSlugLessonSlugRoute
+  CoursesSlugIndexRoute: typeof CoursesSlugIndexRoute
 }
 
 const CoursesSlugRouteChildren: CoursesSlugRouteChildren = {
   CoursesSlugLessonSlugRoute: CoursesSlugLessonSlugRoute,
+  CoursesSlugIndexRoute: CoursesSlugIndexRoute,
 }
 
 const CoursesSlugRouteWithChildren = CoursesSlugRoute._addFileChildren(
