@@ -6,11 +6,9 @@ import {
   type Edge,
   type Node,
   ReactFlow,
-  useEdgesState,
-  useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { orpc } from "@/utils/orpc";
 
@@ -47,35 +45,33 @@ const NODE_STYLES = {
 } as const;
 
 // 位置計算：横並びの3行レイアウト
-function computePositions(
-  themes: { id: string }[],
-  philosophers: { id: string }[],
-  articles: { id: string }[],
-) {
-  const positions: Record<string, { x: number; y: number }> = {};
-  const gap = 200;
+// rawNodes の id はすでに "theme-xxx"/"philo-xxx"/"article-xxx" 形式なので直接使用
+function computePositions(nodes: { id: string; type: string }[]) {
+  const themes = nodes.filter((n) => n.type === "theme");
+  const philosophers = nodes.filter((n) => n.type === "philosopher");
+  const articles = nodes.filter((n) => n.type === "article");
 
-  // テーマ: y=0
+  const positions: Record<string, { x: number; y: number }> = {};
+  const hGap = 210;
+
   themes.forEach((t, i) => {
-    positions[`theme-${t.id}`] = {
-      x: (i - (themes.length - 1) / 2) * gap,
+    positions[t.id] = {
+      x: (i - (themes.length - 1) / 2) * hGap,
       y: 0,
     };
   });
 
-  // 哲学者: y=220
   philosophers.forEach((p, i) => {
-    positions[`philo-${p.id}`] = {
-      x: (i - (philosophers.length - 1) / 2) * gap,
-      y: 220,
+    positions[p.id] = {
+      x: (i - (philosophers.length - 1) / 2) * hGap,
+      y: 260,
     };
   });
 
-  // 記事: y=440
   articles.forEach((a, i) => {
-    positions[`article-${a.id}`] = {
-      x: (i - (articles.length - 1) / 2) * gap,
-      y: 440,
+    positions[a.id] = {
+      x: (i - (articles.length - 1) / 2) * hGap,
+      y: 520,
     };
   });
 
@@ -84,6 +80,7 @@ function computePositions(
 
 function MapPage() {
   const navigate = useNavigate();
+  const fitViewRef = useRef<(() => void) | null>(null);
   const [activeFilters, setActiveFilters] = useState<Set<NodeFilter>>(
     new Set(["theme", "philosopher", "article"]),
   );
@@ -93,15 +90,10 @@ function MapPage() {
   const rawNodes = useMemo(() => data?.nodes ?? [], [data]);
   const rawEdges = useMemo(() => data?.edges ?? [], [data]);
 
-  // 位置計算
-  const positions = useMemo(() => {
-    const themes = rawNodes.filter((n) => n.type === "theme");
-    const philosophers = rawNodes.filter((n) => n.type === "philosopher");
-    const articles = rawNodes.filter((n) => n.type === "article");
-    return computePositions(themes, philosophers, articles);
-  }, [rawNodes]);
+  // 全rawNodesの位置を一括計算（フィルター変更の影響を受けない）
+  const positions = useMemo(() => computePositions(rawNodes), [rawNodes]);
 
-  // ReactFlow用ノード変換
+  // フィルター適用済みノード
   const flowNodes: Node[] = useMemo(() => {
     return rawNodes
       .filter((n) => activeFilters.has(n.type as NodeFilter))
@@ -135,7 +127,7 @@ function MapPage() {
       });
   }, [rawNodes, positions, activeFilters]);
 
-  // ReactFlow用エッジ変換
+  // フィルター適用済みエッジ
   const flowEdges: Edge[] = useMemo(() => {
     const visibleIds = new Set(flowNodes.map((n) => n.id));
     return rawEdges
@@ -154,18 +146,6 @@ function MapPage() {
         },
       }));
   }, [rawEdges, flowNodes]);
-
-  const [nodes, setNodes, onNodesChange] = useNodesState(flowNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(flowEdges);
-
-  // ノード・エッジ更新
-  useEffect(() => {
-    setNodes(flowNodes);
-  }, [flowNodes, setNodes]);
-
-  useEffect(() => {
-    setEdges(flowEdges);
-  }, [flowEdges, setEdges]);
 
   // ノードクリック → 詳細ページへ遷移
   const onNodeClick = useCallback(
@@ -193,6 +173,8 @@ function MapPage() {
       }
       return next;
     });
+    // フィルター変更後にビューを再フィット
+    setTimeout(() => fitViewRef.current?.(), 50);
   };
 
   return (
@@ -267,13 +249,15 @@ function MapPage() {
           </div>
         ) : (
           <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
+            nodes={flowNodes}
+            edges={flowEdges}
             onNodeClick={onNodeClick}
+            onInit={(instance) => {
+              fitViewRef.current = () => instance.fitView({ padding: 0.2 });
+            }}
             fitView
             fitViewOptions={{ padding: 0.2 }}
+            nodesDraggable={false}
             minZoom={0.3}
             maxZoom={2}
             style={{ background: "transparent" }}
