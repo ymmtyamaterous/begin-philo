@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GlossaryRouteImport } from './routes/glossary'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -31,6 +32,11 @@ import { Route as CoursesSlugLessonSlugRouteImport } from './routes/courses/$slu
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRouteWithChildren
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/philosophers/$slug': typeof PhilosophersSlugRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/search': typeof SearchRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRouteWithChildren
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/glossary'
     | '/login'
+    | '/map'
     | '/search'
     | '/articles/$slug'
     | '/courses/$slug'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/glossary'
     | '/login'
+    | '/map'
     | '/search'
     | '/articles/$slug'
     | '/philosophers/$slug'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/glossary'
     | '/login'
+    | '/map'
     | '/search'
     | '/articles/$slug'
     | '/courses/$slug'
@@ -247,6 +259,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   GlossaryRoute: typeof GlossaryRoute
   LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
   SearchRoute: typeof SearchRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRouteWithChildren
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -411,6 +431,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   GlossaryRoute: GlossaryRoute,
   LoginRoute: LoginRoute,
+  MapRoute: MapRoute,
   SearchRoute: SearchRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
   CoursesSlugRoute: CoursesSlugRouteWithChildren,

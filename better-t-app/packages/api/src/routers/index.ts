@@ -5,8 +5,10 @@ import { articlesRouter } from "./articles";
 import { bookmarksRouter } from "./bookmarks";
 import { coursesRouter } from "./courses";
 import { glossaryRouter } from "./glossary";
+import { mapRouter } from "./map";
 import { philosophersRouter } from "./philosophers";
 import { progressRouter } from "./progress";
+import { quizRouter } from "./quiz";
 import { quotesRouter } from "./quotes";
 import { searchRouter } from "./search";
 import { themesRouter } from "./themes";
@@ -27,9 +29,11 @@ export const appRouter = {
   themes: themesRouter,
   glossary: glossaryRouter,
   quotes: quotesRouter,
+  quiz: quizRouter,
   search: searchRouter,
   progress: progressRouter,
   bookmarks: bookmarksRouter,
+  map: mapRouter,
 };
 export type AppRouter = typeof appRouter;
 export type AppRouterClient = RouterClient<typeof appRouter>;

@@ -160,6 +160,19 @@ function ArticlesPage() {
                 >
                   {a.tag}
                 </span>
+                {a.seriesTitle && (
+                  <span
+                    className="self-start text-xs px-2 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: "rgba(139,69,19,0.12)",
+                      color: "var(--accent)",
+                      fontFamily: '"Noto Serif JP", serif',
+                      border: "1px solid rgba(139,69,19,0.25)",
+                    }}
+                  >
+                    📚 {a.seriesTitle}
+                  </span>
+                )}
                 <h3
                   className="text-base font-semibold leading-snug"
                   style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}

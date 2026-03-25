@@ -120,6 +120,58 @@ function ArticleDetailPage() {
             </ReactMarkdown>
           </div>
 
+          {/* シリーズナビゲーション */}
+          {data.series && (
+            <div
+              className="mt-12 p-5 rounded-xl"
+              style={{ backgroundColor: "var(--aged)", border: "1px solid rgba(139,69,19,0.12)" }}
+            >
+              <div className="flex items-baseline gap-2 mb-3">
+                <span
+                  className="text-xs uppercase tracking-widest"
+                  style={{ color: "var(--accent)" }}
+                >
+                  Series
+                </span>
+                <span
+                  className="text-sm font-semibold"
+                  style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                >
+                  {data.series.title}
+                </span>
+                <span className="text-xs ml-auto" style={{ color: "var(--philo-muted)" }}>
+                  {data.series.currentOrder} / {data.series.totalCount}
+                </span>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                {data.series.prevArticle ? (
+                  <Link
+                    to="/articles/$slug"
+                    params={{ slug: data.series.prevArticle.slug }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm flex-1 transition-opacity hover:opacity-70"
+                    style={{ backgroundColor: "rgba(139,69,19,0.07)", color: "var(--philo-muted)" }}
+                  >
+                    <span>←</span>
+                    <span className="line-clamp-1">{data.series.prevArticle.title}</span>
+                  </Link>
+                ) : (
+                  <div className="flex-1" />
+                )}
+                {data.series.nextArticle && (
+                  <Link
+                    to="/articles/$slug"
+                    params={{ slug: data.series.nextArticle.slug }}
+                    className="flex items-center justify-end gap-2 px-4 py-2.5 rounded-lg text-sm flex-1 transition-opacity hover:opacity-70"
+                    style={{ backgroundColor: "rgba(139,69,19,0.07)", color: "var(--philo-muted)" }}
+                  >
+                    <span className="line-clamp-1">{data.series.nextArticle.title}</span>
+                    <span>→</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* 関連記事 */}
           {data.relatedArticles.length > 0 && (
             <div className="mt-16">

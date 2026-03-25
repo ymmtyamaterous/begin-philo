@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
+import { QuizModal } from "@/components/quiz-modal";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/courses/$slug/$lessonSlug")({
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/courses/$slug/$lessonSlug")({
 function LessonPage() {
   const { slug, lessonSlug } = Route.useParams();
   const queryClient = useQueryClient();
+  const [quizOpen, setQuizOpen] = useState(false);
 
   const { data, isLoading } = useQuery(
     orpc.courses.getLesson.queryOptions({ input: { courseSlug: slug, lessonSlug } }),
@@ -51,6 +54,7 @@ function LessonPage() {
   const lessonNumber = data.number;
 
   return (
+    <>
     <div style={{ backgroundColor: "var(--paper)", minHeight: "100vh" }}>
       {/* ヘッダー */}
       <div
@@ -119,21 +123,34 @@ function LessonPage() {
             className="text-sm mb-4"
             style={{ color: "var(--philo-muted)" }}
           >
-            このレッスンを学習し終えたら完了にしましょう。
+            {data.hasQuiz
+              ? "このレッスンを学習し終えたらクイズに挑戦してみましょう。"
+              : "このレッスンを学習し終えたら完了にしましょう。"}
           </p>
-          <button
-            type="button"
-            onClick={() => completeLesson.mutate({ lessonId: data.id })}
-            disabled={completeLesson.isPending}
-            className="px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-            style={{
-              backgroundColor: "var(--accent)",
-              color: "var(--paper)",
-              opacity: completeLesson.isPending ? 0.7 : 1,
-            }}
-          >
-            {completeLesson.isPending ? "処理中..." : "✓ レッスン完了"}
-          </button>
+          {data.hasQuiz ? (
+            <button
+              type="button"
+              onClick={() => setQuizOpen(true)}
+              className="px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+              style={{ backgroundColor: "var(--accent)", color: "var(--paper)" }}
+            >
+              ℹ️ クイズを完了する
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => completeLesson.mutate({ lessonId: data.id })}
+              disabled={completeLesson.isPending}
+              className="px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                backgroundColor: "var(--accent)",
+                color: "var(--paper)",
+                opacity: completeLesson.isPending ? 0.7 : 1,
+              }}
+            >
+              {completeLesson.isPending ? "処理中..." : "✓ レッスン完了"}
+            </button>
+          )}
         </div>
 
         {/* 前後ナビゲーション */}
@@ -186,5 +203,18 @@ function LessonPage() {
         </div>
       </div>
     </div>
+
+      {/* クイズモーダル */}
+      {quizOpen && (
+        <QuizModal
+          lessonId={data.id}
+          onClose={() => setQuizOpen(false)}
+          onComplete={() => {
+            setQuizOpen(false);
+            completeLesson.mutate({ lessonId: data.id });
+          }}
+        />
+      )}
+    </>
   );
 }

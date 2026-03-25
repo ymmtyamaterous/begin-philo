@@ -1,6 +1,8 @@
 import { db } from "@better-t-app/db";
 import {
   article,
+  articleSeries,
+  articleSeriesItem,
   articleTheme,
   philosopher,
   theme,
@@ -97,6 +99,24 @@ export const articlesRouter = {
         }
       }
 
+      // シリーズ情報をバッチ取得
+      const filteredIds = filtered.map((a) => a.id);
+      const seriesMap = new Map<string, string>();
+      if (filteredIds.length > 0) {
+        const seriesRows = await db
+          .select({
+            articleId: articleSeriesItem.articleId,
+            seriesTitle: articleSeries.title,
+          })
+          .from(articleSeriesItem)
+          .innerJoin(articleSeries, eq(articleSeriesItem.seriesId, articleSeries.id))
+          .where(inArray(articleSeriesItem.articleId, filteredIds))
+          .all();
+        for (const row of seriesRows) {
+          seriesMap.set(row.articleId, row.seriesTitle);
+        }
+      }
+
       // 各記事のテーマを取得
       const articlesWithThemes = await Promise.all(
         filtered.map(async (a) => {
@@ -121,6 +141,7 @@ export const articlesRouter = {
             publishedAt: a.publishedAt,
             featured: a.featured,
             themes,
+            seriesTitle: seriesMap.get(a.id) ?? null,
             philosopher:
               a.philosopherId && a.philosopherName && a.philosopherSlug
                 ? { id: a.philosopherId, name: a.philosopherName, slug: a.philosopherSlug }
@@ -240,6 +261,49 @@ export const articlesRouter = {
               .limit(2)
               .all();
 
+      // シリーズ情報
+      const seriesItem = await db
+        .select({
+          seriesId: articleSeriesItem.seriesId,
+          order: articleSeriesItem.order,
+          seriesTitle: articleSeries.title,
+          seriesSlug: articleSeries.slug,
+        })
+        .from(articleSeriesItem)
+        .innerJoin(articleSeries, eq(articleSeries.id, articleSeriesItem.seriesId))
+        .where(eq(articleSeriesItem.articleId, row.id))
+        .get();
+
+      let series = null;
+      if (seriesItem) {
+        const siblingItems = await db
+          .select({
+            order: articleSeriesItem.order,
+            articleId: articleSeriesItem.articleId,
+            articleSlug: article.slug,
+            articleTitle: article.title,
+          })
+          .from(articleSeriesItem)
+          .innerJoin(article, eq(article.id, articleSeriesItem.articleId))
+          .where(eq(articleSeriesItem.seriesId, seriesItem.seriesId))
+          .orderBy(asc(articleSeriesItem.order))
+          .all();
+
+        const totalCount = siblingItems.length;
+        const currentOrder = seriesItem.order;
+        const prevItem = siblingItems.find((s) => s.order === currentOrder - 1);
+        const nextItem = siblingItems.find((s) => s.order === currentOrder + 1);
+
+        series = {
+          slug: seriesItem.seriesSlug,
+          title: seriesItem.seriesTitle,
+          currentOrder,
+          totalCount,
+          prevArticle: prevItem ? { slug: prevItem.articleSlug, title: prevItem.articleTitle } : null,
+          nextArticle: nextItem ? { slug: nextItem.articleSlug, title: nextItem.articleTitle } : null,
+        };
+      }
+
       return {
         id: row.id,
         slug: row.slug,
@@ -257,6 +321,7 @@ export const articlesRouter = {
             : null,
         relatedArticles,
         relatedPhilosophers,
+        series,
       };
     }),
 };

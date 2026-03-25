@@ -58,6 +58,7 @@ export function Footer() {
           </h4>
           {[
             { to: "/glossary", label: "用語集" },
+            { to: "/map", label: "学習マップ" },
             { to: "/search", label: "検索" },
             { to: "/dashboard", label: "ダッシュボード" },
           ].map((link) => (

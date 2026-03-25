@@ -1,5 +1,5 @@
 import { db } from "@better-t-app/db";
-import { course, lesson } from "@better-t-app/db";
+import { course, lesson, quiz } from "@better-t-app/db";
 import { ORPCError } from "@orpc/server";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
@@ -137,6 +137,14 @@ export const coursesRouter = {
       const prevLesson = currentIdx > 0 ? allLessons[currentIdx - 1] : null;
       const nextLesson = currentIdx < allLessons.length - 1 ? allLessons[currentIdx + 1] : null;
 
+      // このレッスンにクイズがあるか確認
+      const quizCountRow = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(quiz)
+        .where(eq(quiz.lessonId, lessonRow.id))
+        .get();
+      const hasQuiz = (quizCountRow?.count ?? 0) > 0;
+
       return {
         id: lessonRow.id,
         slug: lessonRow.slug,
@@ -147,6 +155,7 @@ export const coursesRouter = {
         prevLesson: prevLesson ? { slug: prevLesson.slug, title: prevLesson.title } : null,
         nextLesson: nextLesson ? { slug: nextLesson.slug, title: nextLesson.title } : null,
         course: { id: courseRow.id, slug: courseRow.slug, title: courseRow.title },
+        hasQuiz,
       };
     }),
 };
