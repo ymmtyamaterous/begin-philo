@@ -6,7 +6,7 @@ import {
   theme,
 } from "@better-t-app/db";
 import { ORPCError } from "@orpc/server";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, lte, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { publicProcedure } from "../index";
@@ -20,6 +20,8 @@ export const articlesRouter = {
         limit: z.number().min(1).max(100).default(20),
         offset: z.number().min(0).default(0),
         featured: z.boolean().optional(),
+        maxReadingTime: z.number().positive().optional(),
+        minReadingTime: z.number().positive().optional(),
       }),
     )
     .handler(async ({ input }) => {
@@ -27,6 +29,14 @@ export const articlesRouter = {
 
       if (input.featured !== undefined) {
         conditions.push(eq(article.featured, input.featured));
+      }
+
+      if (input.maxReadingTime !== undefined) {
+        conditions.push(lte(article.readingTime, input.maxReadingTime));
+      }
+
+      if (input.minReadingTime !== undefined) {
+        conditions.push(sql`${article.readingTime} >= ${input.minReadingTime}`);
       }
 
       if (input.philosopherSlug) {
@@ -156,27 +166,79 @@ export const articlesRouter = {
         .where(eq(articleTheme.articleId, row.id))
         .all();
 
-      // 関連記事（同じテーマ）
-      const firstTheme = themes.at(0);
-      const relatedArticles = firstTheme
+      // 関連記事（全テーマ対応・重複除外・最大4件）
+      const themeIds = themes.map((t) => t.id);
+      const relatedArticles =
+        themeIds.length > 0
           ? await db
               .select({
                 id: article.id,
                 slug: article.slug,
                 title: article.title,
                 tag: article.tag,
+                readingTime: article.readingTime,
               })
               .from(article)
               .innerJoin(articleTheme, eq(articleTheme.articleId, article.id))
               .where(
                 and(
-                  eq(articleTheme.themeId, firstTheme.id),
-                  sql`${article.id} != ${row.id}`,
+                  ne(article.id, row.id),
+                  inArray(articleTheme.themeId, themeIds),
                 ),
               )
+              .groupBy(article.id)
+              .orderBy(desc(article.publishedAt))
               .limit(4)
               .all()
           : [];
+
+      // 関連哲学者（同じ地域の哲学者、記事の哲学者は除く）
+      const relatedPhilosophers =
+        row.philosopherId
+          ? await db
+              .select({
+                id: philosopher.id,
+                slug: philosopher.slug,
+                name: philosopher.name,
+                initial: philosopher.initial,
+                shortBio: philosopher.shortBio,
+              })
+              .from(philosopher)
+              .where(
+                and(
+                  ne(philosopher.id, row.philosopherId),
+                  sql`${philosopher.id} IN (
+                    SELECT p.id FROM philosopher p
+                    WHERE p.region = (
+                      SELECT region FROM philosopher WHERE id = ${row.philosopherId}
+                    )
+                    AND p.id != ${row.philosopherId}
+                    ORDER BY p.birth_year ASC
+                    LIMIT 2
+                  )`,
+                ),
+              )
+              .all()
+          : await db
+              .select({
+                id: philosopher.id,
+                slug: philosopher.slug,
+                name: philosopher.name,
+                initial: philosopher.initial,
+                shortBio: philosopher.shortBio,
+              })
+              .from(philosopher)
+              .innerJoin(article, eq(article.philosopherId, philosopher.id))
+              .innerJoin(articleTheme, eq(articleTheme.articleId, article.id))
+              .where(
+                themeIds.length > 0
+                  ? inArray(articleTheme.themeId, themeIds)
+                  : sql`1=0`,
+              )
+              .groupBy(philosopher.id)
+              .orderBy(asc(philosopher.birthYear))
+              .limit(2)
+              .all();
 
       return {
         id: row.id,
@@ -194,6 +256,7 @@ export const articlesRouter = {
             ? { id: row.philosopherId, name: row.philosopherName, slug: row.philosopherSlug }
             : null,
         relatedArticles,
+        relatedPhilosophers,
       };
     }),
 };

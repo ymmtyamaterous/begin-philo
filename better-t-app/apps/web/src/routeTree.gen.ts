@@ -19,6 +19,7 @@ import { Route as PhilosophersIndexRouteImport } from './routes/philosophers/ind
 import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
 import { Route as ThemesSlugRouteImport } from './routes/themes/$slug'
+import { Route as PhilosophersTimelineRouteImport } from './routes/philosophers/timeline'
 import { Route as PhilosophersSlugRouteImport } from './routes/philosophers/$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
 import { Route as ArticlesSlugRouteImport } from './routes/articles/$slug'
@@ -75,6 +76,11 @@ const ThemesSlugRoute = ThemesSlugRouteImport.update({
   path: '/themes/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PhilosophersTimelineRoute = PhilosophersTimelineRouteImport.update({
+  id: '/philosophers/timeline',
+  path: '/philosophers/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhilosophersSlugRoute = PhilosophersSlugRouteImport.update({
   id: '/philosophers/$slug',
   path: '/philosophers/$slug',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRouteWithChildren
   '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/philosophers/timeline': typeof PhilosophersTimelineRoute
   '/themes/$slug': typeof ThemesSlugRoute
   '/articles/': typeof ArticlesIndexRoute
   '/courses/': typeof CoursesIndexRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/philosophers/timeline': typeof PhilosophersTimelineRoute
   '/themes/$slug': typeof ThemesSlugRoute
   '/articles': typeof ArticlesIndexRoute
   '/courses': typeof CoursesIndexRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRouteWithChildren
   '/philosophers/$slug': typeof PhilosophersSlugRoute
+  '/philosophers/timeline': typeof PhilosophersTimelineRoute
   '/themes/$slug': typeof ThemesSlugRoute
   '/articles/': typeof ArticlesIndexRoute
   '/courses/': typeof CoursesIndexRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/articles/$slug'
     | '/courses/$slug'
     | '/philosophers/$slug'
+    | '/philosophers/timeline'
     | '/themes/$slug'
     | '/articles/'
     | '/courses/'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/articles/$slug'
     | '/philosophers/$slug'
+    | '/philosophers/timeline'
     | '/themes/$slug'
     | '/articles'
     | '/courses'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/articles/$slug'
     | '/courses/$slug'
     | '/philosophers/$slug'
+    | '/philosophers/timeline'
     | '/themes/$slug'
     | '/articles/'
     | '/courses/'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRouteWithChildren
   PhilosophersSlugRoute: typeof PhilosophersSlugRoute
+  PhilosophersTimelineRoute: typeof PhilosophersTimelineRoute
   ThemesSlugRoute: typeof ThemesSlugRoute
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ThemesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/philosophers/timeline': {
+      id: '/philosophers/timeline'
+      path: '/philosophers/timeline'
+      fullPath: '/philosophers/timeline'
+      preLoaderRoute: typeof PhilosophersTimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/philosophers/$slug': {
       id: '/philosophers/$slug'
       path: '/philosophers/$slug'
@@ -354,6 +374,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticlesSlugRoute: ArticlesSlugRoute,
   CoursesSlugRoute: CoursesSlugRouteWithChildren,
   PhilosophersSlugRoute: PhilosophersSlugRoute,
+  PhilosophersTimelineRoute: PhilosophersTimelineRoute,
   ThemesSlugRoute: ThemesSlugRoute,
   ArticlesIndexRoute: ArticlesIndexRoute,
   CoursesIndexRoute: CoursesIndexRoute,

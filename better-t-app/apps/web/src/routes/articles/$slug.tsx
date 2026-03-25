@@ -183,28 +183,60 @@ function ArticleDetailPage() {
               >
                 関連哲学者
               </h3>
-              <Link
-                to="/philosophers/$slug"
-                params={{ slug: data.philosopher.slug }}
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
-                  style={{
-                    backgroundColor: "rgba(139,69,19,0.12)",
-                    color: "var(--accent)",
-                    fontFamily: '"Cormorant Garamond", serif',
-                  }}
+              <div className="flex flex-col gap-3">
+                <Link
+                  to="/philosophers/$slug"
+                  params={{ slug: data.philosopher.slug }}
+                  className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
-                  {data.philosopher.name[0]}
-                </div>
-                <span
-                  className="text-sm font-medium"
-                  style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
-                >
-                  {data.philosopher.name}
-                </span>
-              </Link>
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
+                    style={{
+                      backgroundColor: "rgba(139,69,19,0.12)",
+                      color: "var(--accent)",
+                      fontFamily: '"Cormorant Garamond", serif',
+                    }}
+                  >
+                    {data.philosopher.name[0]}
+                  </div>
+                  <span
+                    className="text-sm font-medium"
+                    style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                  >
+                    {data.philosopher.name}
+                  </span>
+                </Link>
+                {data.relatedPhilosophers.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/philosophers/$slug"
+                    params={{ slug: p.slug }}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
+                      style={{
+                        backgroundColor: "rgba(139,69,19,0.07)",
+                        color: "var(--philo-muted)",
+                        fontFamily: '"Cormorant Garamond", serif',
+                      }}
+                    >
+                      {p.initial}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span
+                        className="text-sm font-medium"
+                        style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                      >
+                        {p.name}
+                      </span>
+                      <span className="text-xs line-clamp-1" style={{ color: "var(--light-muted)" }}>
+                        {p.shortBio}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </aside>

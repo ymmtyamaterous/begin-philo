@@ -217,6 +217,51 @@ function PhilosopherDetailPage() {
               </div>
             </div>
           )}
+
+          {/* 関連哲学者 */}
+          {data.relatedPhilosophers.length > 0 && (
+            <div className="mt-12">
+              <h2
+                className="text-xl font-semibold mb-6"
+                style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+              >
+                同じ時代の哲学者
+              </h2>
+              <div className="flex flex-col gap-3">
+                {data.relatedPhilosophers.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/philosophers/$slug"
+                    params={{ slug: p.slug }}
+                    className="flex items-center gap-4 p-4 rounded-lg transition-colors hover:bg-[var(--aged)]"
+                    style={{ border: "1px solid rgba(139,69,19,0.1)" }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shrink-0"
+                      style={{
+                        backgroundColor: "rgba(139,69,19,0.08)",
+                        color: "var(--accent)",
+                        fontFamily: '"Cormorant Garamond", serif',
+                      }}
+                    >
+                      {p.initial}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                      >
+                        {p.name}
+                      </span>
+                      <span className="text-xs" style={{ color: "var(--philo-muted)" }}>
+                        {p.era} · {p.region}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 名言サイドバー */}

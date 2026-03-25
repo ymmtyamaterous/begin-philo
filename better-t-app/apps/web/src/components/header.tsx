@@ -14,6 +14,7 @@ export default function Header() {
     { to: "/philosophers", label: "哲学者" },
     { to: "/themes", label: "テーマ" },
     { to: "/articles", label: "読む" },
+    { to: "/philosophers/timeline", label: "タイムライン" },
   ] as const;
 
   const handleSearch = (e: React.FormEvent) => {

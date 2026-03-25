@@ -7,7 +7,7 @@ import {
   theme,
 } from "@better-t-app/db";
 import { ORPCError } from "@orpc/server";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { publicProcedure } from "../index";
@@ -43,6 +43,7 @@ export const philosophersRouter = {
           nameEn: philosopher.nameEn,
           initial: philosopher.initial,
           era: philosopher.era,
+          birthYear: philosopher.birthYear,
           region: philosopher.region,
           shortBio: philosopher.shortBio,
         })
@@ -100,6 +101,28 @@ export const philosophersRouter = {
         .where(eq(quote.philosopherId, row.id))
         .all();
 
+      // 関連哲学者（同じ地域・除く自分）
+      const relatedPhilosophers = await db
+        .select({
+          id: philosopher.id,
+          slug: philosopher.slug,
+          name: philosopher.name,
+          initial: philosopher.initial,
+          era: philosopher.era,
+          region: philosopher.region,
+          shortBio: philosopher.shortBio,
+        })
+        .from(philosopher)
+        .where(
+          and(
+            ne(philosopher.id, row.id),
+            eq(philosopher.region, row.region),
+          ),
+        )
+        .orderBy(asc(philosopher.birthYear))
+        .limit(3)
+        .all();
+
       return {
         id: row.id,
         slug: row.slug,
@@ -116,6 +139,7 @@ export const philosophersRouter = {
         themes,
         articles,
         quotes,
+        relatedPhilosophers,
       };
     }),
 };

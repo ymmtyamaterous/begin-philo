@@ -10,13 +10,30 @@ export const Route = createFileRoute("/articles/")({
   component: ArticlesPage,
 });
 
+type ReadingTimeFilter = "all" | "short" | "medium" | "long";
+
+const READING_TIME_OPTIONS: { label: string; value: ReadingTimeFilter }[] = [
+  { label: "すべて", value: "all" },
+  { label: "5分以内", value: "short" },
+  { label: "10分以内", value: "medium" },
+  { label: "10分以上", value: "long" },
+];
+
+function readingTimeToParams(filter: ReadingTimeFilter) {
+  if (filter === "short") return { maxReadingTime: 5 };
+  if (filter === "medium") return { maxReadingTime: 10 };
+  if (filter === "long") return { minReadingTime: 10 };
+  return {};
+}
+
 function ArticlesPage() {
   const [themeSlug, setThemeSlug] = useState<string | undefined>();
   const [philosopherSlug, setPhilosopherSlug] = useState<string | undefined>();
+  const [readingTimeFilter, setReadingTimeFilter] = useState<ReadingTimeFilter>("all");
 
   const { data, isLoading } = useQuery(
     orpc.articles.list.queryOptions({
-      input: { limit: 20, themeSlug, philosopherSlug },
+      input: { limit: 20, themeSlug, philosopherSlug, ...readingTimeToParams(readingTimeFilter) },
     }),
   );
   const { data: themesData } = useQuery(orpc.themes.list.queryOptions());
@@ -40,43 +57,78 @@ function ArticlesPage() {
         </RevealWrapper>
 
         {/* フィルターバー */}
-        <div className="flex flex-wrap gap-4">
-          <select
-            value={themeSlug ?? ""}
-            onChange={(e) => setThemeSlug(e.target.value || undefined)}
-            className="text-sm px-3 py-2 rounded-md outline-none"
-            style={{
-              border: "1px solid rgba(139,69,19,0.2)",
-              backgroundColor: "var(--paper)",
-              color: "var(--ink)",
-              fontFamily: '"Noto Serif JP", serif',
-            }}
-          >
-            <option value="">テーマ: すべて</option>
-            {themes.map((t) => (
-              <option key={t.id} value={t.slug}>
-                {t.name}
-              </option>
+        <div className="flex flex-col gap-3">
+          {/* テーマ・哲学者セレクト */}
+          <div className="flex flex-wrap gap-4">
+            <select
+              value={themeSlug ?? ""}
+              onChange={(e) => setThemeSlug(e.target.value || undefined)}
+              className="text-sm px-3 py-2 rounded-md outline-none"
+              style={{
+                border: "1px solid rgba(139,69,19,0.2)",
+                backgroundColor: "var(--paper)",
+                color: "var(--ink)",
+                fontFamily: '"Noto Serif JP", serif',
+              }}
+            >
+              <option value="">テーマ: すべて</option>
+              {themes.map((t) => (
+                <option key={t.id} value={t.slug}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={philosopherSlug ?? ""}
+              onChange={(e) => setPhilosopherSlug(e.target.value || undefined)}
+              className="text-sm px-3 py-2 rounded-md outline-none"
+              style={{
+                border: "1px solid rgba(139,69,19,0.2)",
+                backgroundColor: "var(--paper)",
+                color: "var(--ink)",
+                fontFamily: '"Noto Serif JP", serif',
+              }}
+            >
+              <option value="">哲学者: すべて</option>
+              {philosophers.map((p) => (
+                <option key={p.id} value={p.slug}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 読了時間フィルター */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs" style={{ color: "var(--philo-muted)", fontFamily: '"Noto Serif JP", serif' }}>
+              読了時間:
+            </span>
+            {READING_TIME_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setReadingTimeFilter(opt.value)}
+                className="text-xs px-3 py-1.5 rounded-full transition-all"
+                style={
+                  readingTimeFilter === opt.value
+                    ? {
+                        backgroundColor: "var(--accent)",
+                        color: "var(--paper)",
+                        border: "1px solid var(--accent)",
+                        fontFamily: '"Noto Serif JP", serif',
+                      }
+                    : {
+                        backgroundColor: "transparent",
+                        color: "var(--philo-muted)",
+                        border: "1px solid rgba(139,69,19,0.2)",
+                        fontFamily: '"Noto Serif JP", serif',
+                      }
+                }
+              >
+                {opt.label}
+              </button>
             ))}
-          </select>
-          <select
-            value={philosopherSlug ?? ""}
-            onChange={(e) => setPhilosopherSlug(e.target.value || undefined)}
-            className="text-sm px-3 py-2 rounded-md outline-none"
-            style={{
-              border: "1px solid rgba(139,69,19,0.2)",
-              backgroundColor: "var(--paper)",
-              color: "var(--ink)",
-              fontFamily: '"Noto Serif JP", serif',
-            }}
-          >
-            <option value="">哲学者: すべて</option>
-            {philosophers.map((p) => (
-              <option key={p.id} value={p.slug}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+          </div>
         </div>
 
         {isLoading ? (
