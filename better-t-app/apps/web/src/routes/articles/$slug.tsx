@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
+import { GlossaryPopover } from "@/components/glossary-popover";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/articles/$slug")({
@@ -98,7 +99,23 @@ function ArticleDetailPage() {
           />
 
           <div className="prose-philo">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={{
+                a: ({ href, children }) => {
+                  if (href?.startsWith("/glossary#")) {
+                    const term = decodeURIComponent(href.replace("/glossary#", ""));
+                    return <GlossaryPopover term={term}>{children}</GlossaryPopover>;
+                  }
+                  return (
+                    <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
+                      {children}
+                    </a>
+                  );
+                },
+              }}
+            >
               {data.content}
             </ReactMarkdown>
           </div>

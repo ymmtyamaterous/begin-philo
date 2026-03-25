@@ -45,6 +45,7 @@ export function Footer() {
             { to: "/philosophers", label: "哲学者" },
             { to: "/themes", label: "テーマ" },
             { to: "/courses", label: "学習コース" },
+            { to: "/quotes", label: "名言集" },
           ].map((link) => (
             <FooterLink key={link.to} to={link.to} label={link.label} />
           ))}

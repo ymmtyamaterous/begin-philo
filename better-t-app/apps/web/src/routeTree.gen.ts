@@ -13,8 +13,10 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GlossaryRouteImport } from './routes/glossary'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ThemesIndexRouteImport } from './routes/themes/index'
+import { Route as QuotesIndexRouteImport } from './routes/quotes/index'
 import { Route as PhilosophersIndexRouteImport } from './routes/philosophers/index'
 import { Route as CoursesIndexRouteImport } from './routes/courses/index'
 import { Route as ArticlesIndexRouteImport } from './routes/articles/index'
@@ -46,6 +48,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -54,6 +61,11 @@ const IndexRoute = IndexRouteImport.update({
 const ThemesIndexRoute = ThemesIndexRouteImport.update({
   id: '/themes/',
   path: '/themes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuotesIndexRoute = QuotesIndexRouteImport.update({
+  id: '/quotes/',
+  path: '/quotes/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PhilosophersIndexRoute = PhilosophersIndexRouteImport.update({
@@ -109,6 +121,7 @@ const CoursesSlugLessonSlugRoute = CoursesSlugLessonSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
@@ -121,12 +134,14 @@ export interface FileRoutesByFullPath {
   '/articles/': typeof ArticlesIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/philosophers/': typeof PhilosophersIndexRoute
+  '/quotes/': typeof QuotesIndexRoute
   '/themes/': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
   '/courses/$slug/': typeof CoursesSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
@@ -138,6 +153,7 @@ export interface FileRoutesByTo {
   '/articles': typeof ArticlesIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/philosophers': typeof PhilosophersIndexRoute
+  '/quotes': typeof QuotesIndexRoute
   '/themes': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
   '/courses/$slug': typeof CoursesSlugIndexRoute
@@ -145,6 +161,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/glossary': typeof GlossaryRoute
   '/login': typeof LoginRoute
@@ -157,6 +174,7 @@ export interface FileRoutesById {
   '/articles/': typeof ArticlesIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/philosophers/': typeof PhilosophersIndexRoute
+  '/quotes/': typeof QuotesIndexRoute
   '/themes/': typeof ThemesIndexRoute
   '/courses/$slug/$lessonSlug': typeof CoursesSlugLessonSlugRoute
   '/courses/$slug/': typeof CoursesSlugIndexRoute
@@ -165,6 +183,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/compare'
     | '/dashboard'
     | '/glossary'
     | '/login'
@@ -177,12 +196,14 @@ export interface FileRouteTypes {
     | '/articles/'
     | '/courses/'
     | '/philosophers/'
+    | '/quotes/'
     | '/themes/'
     | '/courses/$slug/$lessonSlug'
     | '/courses/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/compare'
     | '/dashboard'
     | '/glossary'
     | '/login'
@@ -194,12 +215,14 @@ export interface FileRouteTypes {
     | '/articles'
     | '/courses'
     | '/philosophers'
+    | '/quotes'
     | '/themes'
     | '/courses/$slug/$lessonSlug'
     | '/courses/$slug'
   id:
     | '__root__'
     | '/'
+    | '/compare'
     | '/dashboard'
     | '/glossary'
     | '/login'
@@ -212,6 +235,7 @@ export interface FileRouteTypes {
     | '/articles/'
     | '/courses/'
     | '/philosophers/'
+    | '/quotes/'
     | '/themes/'
     | '/courses/$slug/$lessonSlug'
     | '/courses/$slug/'
@@ -219,6 +243,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompareRoute: typeof CompareRoute
   DashboardRoute: typeof DashboardRoute
   GlossaryRoute: typeof GlossaryRoute
   LoginRoute: typeof LoginRoute
@@ -231,6 +256,7 @@ export interface RootRouteChildren {
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   PhilosophersIndexRoute: typeof PhilosophersIndexRoute
+  QuotesIndexRoute: typeof QuotesIndexRoute
   ThemesIndexRoute: typeof ThemesIndexRoute
 }
 
@@ -264,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -276,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/themes'
       fullPath: '/themes/'
       preLoaderRoute: typeof ThemesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quotes/': {
+      id: '/quotes/'
+      path: '/quotes'
+      fullPath: '/quotes/'
+      preLoaderRoute: typeof QuotesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/philosophers/': {
@@ -367,6 +407,7 @@ const CoursesSlugRouteWithChildren = CoursesSlugRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompareRoute: CompareRoute,
   DashboardRoute: DashboardRoute,
   GlossaryRoute: GlossaryRoute,
   LoginRoute: LoginRoute,
@@ -379,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArticlesIndexRoute: ArticlesIndexRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   PhilosophersIndexRoute: PhilosophersIndexRoute,
+  QuotesIndexRoute: QuotesIndexRoute,
   ThemesIndexRoute: ThemesIndexRoute,
 }
 export const routeTree = rootRouteImport

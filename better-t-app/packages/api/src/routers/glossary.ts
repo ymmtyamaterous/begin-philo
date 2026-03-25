@@ -53,4 +53,49 @@ export const glossaryRouter = {
         })),
       };
     }),
+
+  get: publicProcedure
+    .input(z.object({ term: z.string() }))
+    .handler(async ({ input }) => {
+      const row = await db
+        .select({
+          id: glossaryTerm.id,
+          term: glossaryTerm.term,
+          reading: glossaryTerm.reading,
+          definition: glossaryTerm.definition,
+          detail: glossaryTerm.detail,
+          philosopherId: glossaryTerm.philosopherId,
+          philosopherName: philosopher.name,
+          philosopherSlug: philosopher.slug,
+          themeId: glossaryTerm.themeId,
+          themeName: theme.name,
+          themeSlug: theme.slug,
+        })
+        .from(glossaryTerm)
+        .leftJoin(philosopher, eq(glossaryTerm.philosopherId, philosopher.id))
+        .leftJoin(theme, eq(glossaryTerm.themeId, theme.id))
+        .where(eq(glossaryTerm.term, input.term))
+        .get();
+
+      if (!row) {
+        throw new Error(`Glossary term not found: ${input.term}`);
+      }
+
+      return {
+        id: row.id,
+        term: row.term,
+        reading: row.reading,
+        definition: row.definition,
+        detail: row.detail ?? null,
+        philosopher:
+          row.philosopherId && row.philosopherName && row.philosopherSlug
+            ? { id: row.philosopherId, name: row.philosopherName, slug: row.philosopherSlug }
+            : null,
+        theme:
+          row.themeId && row.themeName && row.themeSlug
+            ? { id: row.themeId, name: row.themeName, slug: row.themeSlug }
+            : null,
+      };
+    }),
 };
+
