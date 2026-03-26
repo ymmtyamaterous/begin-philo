@@ -13,6 +13,12 @@
   --green-dark: #2d4a2d;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: "Noto Serif JP", serif;
   background-color: var(--paper);
