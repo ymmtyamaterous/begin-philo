@@ -57,7 +57,10 @@ COPY --from=builder /app/apps/web/dist ./web
 # バックエンド (バンドル済みサーバー - better-auth/hono/@orpc/drizzle-orm 等は全てインライン済み)
 COPY --from=builder /app/apps/server/dist ./server
 # マイグレーション SQL ファイル
-COPY --from=builder /app/packages/db/src/migrations ./migrations
+# bun build / tsdown (rolldown) は import.meta.dirname をビルド時にソースファイルの
+# ディレクトリパス (/app/packages/db/src) にインライン展開する。
+# そのため migrate() が参照するパスは /app/packages/db/src/migrations になる。
+COPY --from=builder /app/packages/db/src/migrations ./packages/db/src/migrations
 # シードスクリプト（バンドル済み）
 COPY --from=builder /app/packages/db/dist/seed.mjs ./seed/seed.mjs
 # libsql JS ラッパー + linux-x64-gnu native binary（その他の依存は tsdown バンドルに包含済み）
