@@ -4,7 +4,7 @@ import { createORPCClient } from "@orpc/client";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import { HeadContent, Outlet, ScrollRestoration, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { useState } from "react";
 
@@ -46,6 +46,7 @@ function RootComponent() {
 
   return (
     <>
+      <ScrollRestoration />
       <HeadContent />
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "var(--paper)" }}>
         <Header />

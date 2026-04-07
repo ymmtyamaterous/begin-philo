@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Layers, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { DailyQuestion } from "@/components/daily-question";
 import { RevealWrapper } from "@/components/reveal-wrapper";
 import { SectionHeader } from "@/components/section-header";
 import { orpc } from "@/utils/orpc";
@@ -188,6 +189,11 @@ function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* 今日の問い */}
+      <RevealWrapper>
+        <DailyQuestion />
+      </RevealWrapper>
 
       {/* 学習コースセクション */}
       <section id="path" className="py-20 px-6" style={{ backgroundColor: "var(--aged)" }}>

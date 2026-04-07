@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
+import { GlossaryPopover } from "@/components/glossary-popover";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/philosophers/$slug")({
@@ -114,6 +115,21 @@ function PhilosopherDetailPage() {
                   ))}
                 </div>
               )}
+              <div className="mt-4">
+                <Link
+                  to="/compare"
+                  search={{ a: data.slug }}
+                  className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full transition-colors hover:opacity-80"
+                  style={{
+                    backgroundColor: "var(--ink)",
+                    color: "var(--paper)",
+                    border: "1px solid var(--ink)",
+                  }}
+                >
+                  <span>⇌</span>
+                  <span>他の哲学者と比較する</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -180,7 +196,23 @@ function PhilosopherDetailPage() {
 
           {/* 詳細解説 */}
           <div className="prose-philo">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={{
+                a: ({ href, children }) => {
+                  if (href?.startsWith("/glossary#")) {
+                    const term = decodeURIComponent(href.replace("/glossary#", ""));
+                    return <GlossaryPopover term={term}>{children}</GlossaryPopover>;
+                  }
+                  return (
+                    <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
+                      {children}
+                    </a>
+                  );
+                },
+              }}
+            >
               {data.biography}
             </ReactMarkdown>
           </div>
@@ -212,6 +244,51 @@ function PhilosopherDetailPage() {
                     >
                       {a.title}
                     </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 関連哲学者 */}
+          {data.relatedPhilosophers.length > 0 && (
+            <div className="mt-12">
+              <h2
+                className="text-xl font-semibold mb-6"
+                style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+              >
+                同じ時代の哲学者
+              </h2>
+              <div className="flex flex-col gap-3">
+                {data.relatedPhilosophers.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/philosophers/$slug"
+                    params={{ slug: p.slug }}
+                    className="flex items-center gap-4 p-4 rounded-lg transition-colors hover:bg-[var(--aged)]"
+                    style={{ border: "1px solid rgba(139,69,19,0.1)" }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shrink-0"
+                      style={{
+                        backgroundColor: "rgba(139,69,19,0.08)",
+                        color: "var(--accent)",
+                        fontFamily: '"Cormorant Garamond", serif',
+                      }}
+                    >
+                      {p.initial}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                      >
+                        {p.name}
+                      </span>
+                      <span className="text-xs" style={{ color: "var(--philo-muted)" }}>
+                        {p.era} · {p.region}
+                      </span>
+                    </div>
                   </Link>
                 ))}
               </div>

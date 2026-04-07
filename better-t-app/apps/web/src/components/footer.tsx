@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 export function Footer() {
   return (
     <footer
-      className="mt-auto py-16 px-6"
+      className="py-16 px-6"
       style={{ backgroundColor: "var(--ink)", color: "var(--paper)" }}
     >
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10">
@@ -45,6 +45,7 @@ export function Footer() {
             { to: "/philosophers", label: "哲学者" },
             { to: "/themes", label: "テーマ" },
             { to: "/courses", label: "学習コース" },
+            { to: "/quotes", label: "名言集" },
           ].map((link) => (
             <FooterLink key={link.to} to={link.to} label={link.label} />
           ))}
@@ -57,6 +58,7 @@ export function Footer() {
           </h4>
           {[
             { to: "/glossary", label: "用語集" },
+            { to: "/map", label: "学習マップ" },
             { to: "/search", label: "検索" },
             { to: "/dashboard", label: "ダッシュボード" },
           ].map((link) => (

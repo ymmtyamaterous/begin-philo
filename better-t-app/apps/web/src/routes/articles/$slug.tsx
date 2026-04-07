@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
+import { GlossaryPopover } from "@/components/glossary-popover";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/articles/$slug")({
@@ -98,10 +99,78 @@ function ArticleDetailPage() {
           />
 
           <div className="prose-philo">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={{
+                a: ({ href, children }) => {
+                  if (href?.startsWith("/glossary#")) {
+                    const term = decodeURIComponent(href.replace("/glossary#", ""));
+                    return <GlossaryPopover term={term}>{children}</GlossaryPopover>;
+                  }
+                  return (
+                    <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}>
+                      {children}
+                    </a>
+                  );
+                },
+              }}
+            >
               {data.content}
             </ReactMarkdown>
           </div>
+
+          {/* シリーズナビゲーション */}
+          {data.series && (
+            <div
+              className="mt-12 p-5 rounded-xl"
+              style={{ backgroundColor: "var(--aged)", border: "1px solid rgba(139,69,19,0.12)" }}
+            >
+              <div className="flex items-baseline gap-2 mb-3">
+                <span
+                  className="text-xs uppercase tracking-widest"
+                  style={{ color: "var(--accent)" }}
+                >
+                  Series
+                </span>
+                <span
+                  className="text-sm font-semibold"
+                  style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                >
+                  {data.series.title}
+                </span>
+                <span className="text-xs ml-auto" style={{ color: "var(--philo-muted)" }}>
+                  {data.series.currentOrder} / {data.series.totalCount}
+                </span>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                {data.series.prevArticle ? (
+                  <Link
+                    to="/articles/$slug"
+                    params={{ slug: data.series.prevArticle.slug }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm flex-1 transition-opacity hover:opacity-70"
+                    style={{ backgroundColor: "rgba(139,69,19,0.07)", color: "var(--philo-muted)" }}
+                  >
+                    <span>←</span>
+                    <span className="line-clamp-1">{data.series.prevArticle.title}</span>
+                  </Link>
+                ) : (
+                  <div className="flex-1" />
+                )}
+                {data.series.nextArticle && (
+                  <Link
+                    to="/articles/$slug"
+                    params={{ slug: data.series.nextArticle.slug }}
+                    className="flex items-center justify-end gap-2 px-4 py-2.5 rounded-lg text-sm flex-1 transition-opacity hover:opacity-70"
+                    style={{ backgroundColor: "rgba(139,69,19,0.07)", color: "var(--philo-muted)" }}
+                  >
+                    <span className="line-clamp-1">{data.series.nextArticle.title}</span>
+                    <span>→</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* 関連記事 */}
           {data.relatedArticles.length > 0 && (
@@ -183,28 +252,60 @@ function ArticleDetailPage() {
               >
                 関連哲学者
               </h3>
-              <Link
-                to="/philosophers/$slug"
-                params={{ slug: data.philosopher.slug }}
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
-                  style={{
-                    backgroundColor: "rgba(139,69,19,0.12)",
-                    color: "var(--accent)",
-                    fontFamily: '"Cormorant Garamond", serif',
-                  }}
+              <div className="flex flex-col gap-3">
+                <Link
+                  to="/philosophers/$slug"
+                  params={{ slug: data.philosopher.slug }}
+                  className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                 >
-                  {data.philosopher.name[0]}
-                </div>
-                <span
-                  className="text-sm font-medium"
-                  style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
-                >
-                  {data.philosopher.name}
-                </span>
-              </Link>
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
+                    style={{
+                      backgroundColor: "rgba(139,69,19,0.12)",
+                      color: "var(--accent)",
+                      fontFamily: '"Cormorant Garamond", serif',
+                    }}
+                  >
+                    {data.philosopher.name[0]}
+                  </div>
+                  <span
+                    className="text-sm font-medium"
+                    style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                  >
+                    {data.philosopher.name}
+                  </span>
+                </Link>
+                {data.relatedPhilosophers.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/philosophers/$slug"
+                    params={{ slug: p.slug }}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
+                      style={{
+                        backgroundColor: "rgba(139,69,19,0.07)",
+                        color: "var(--philo-muted)",
+                        fontFamily: '"Cormorant Garamond", serif',
+                      }}
+                    >
+                      {p.initial}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span
+                        className="text-sm font-medium"
+                        style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                      >
+                        {p.name}
+                      </span>
+                      <span className="text-xs line-clamp-1" style={{ color: "var(--light-muted)" }}>
+                        {p.shortBio}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </aside>

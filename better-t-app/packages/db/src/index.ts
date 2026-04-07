@@ -16,7 +16,9 @@ export const db = drizzle({ client, schema });
  * ./migrations フォルダ内の未適用 SQL を順番に実行する。
  */
 export async function runMigrations() {
-  await migrate(db, { migrationsFolder: "./migrations" });
+  await migrate(db, {
+    migrationsFolder: `${import.meta.dirname}/migrations`,
+  });
   console.log("[db] migrations applied");
 }
 

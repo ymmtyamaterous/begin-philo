@@ -30,16 +30,18 @@ const ROW_LABELS = KANA_ROWS.map((r) => r.label);
 function GlossaryPage() {
   const [selectedRow, setSelectedRow] = useState<string | undefined>(undefined);
 
-  // 選択した行の最初の文字を initial として渡す
-  const initial = selectedRow
-    ? KANA_ROWS.find((r) => r.label === selectedRow)?.values[0]
-    : undefined;
-
+  // 常に全件取得し、クライアント側でフィルタリング
   const { data, isLoading } = useQuery(
-    orpc.glossary.list.queryOptions({
-      input: initial ? { initial } : {},
-    }),
+    orpc.glossary.list.queryOptions({ input: {} }),
   );
+
+  // 選択行の全文字にマッチするよう絞り込む
+  const terms = (data?.terms ?? []).filter((term) => {
+    if (!selectedRow) return true;
+    const row = KANA_ROWS.find((r) => r.label === selectedRow);
+    if (!row) return true;
+    return row.values.some((ch) => term.reading.startsWith(ch));
+  });
 
   return (
     <div style={{ backgroundColor: "var(--paper)" }}>
@@ -113,13 +115,13 @@ function GlossaryPage() {
               />
             ))}
           </div>
-        ) : (data?.terms ?? []).length === 0 ? (
+        ) : terms.length === 0 ? (
           <div className="text-center py-16">
             <p style={{ color: "var(--philo-muted)" }}>用語が見つかりませんでした。</p>
           </div>
         ) : (
           <RevealWrapper stagger className="flex flex-col gap-4">
-            {(data?.terms ?? []).map((term) => (
+            {terms.map((term) => (
               <div
                 key={term.id}
                 className="p-5 rounded-xl"

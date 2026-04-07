@@ -30,8 +30,9 @@ function PhilosophersPage() {
         </RevealWrapper>
 
         {/* フィルター */}
-        <div className="flex gap-3">
-          {[
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex gap-3">
+            {[
             { label: "すべて", value: undefined },
             { label: "西洋哲学", value: "western" as const },
             { label: "東洋哲学", value: "eastern" as const },
@@ -51,6 +52,14 @@ function PhilosophersPage() {
               {item.label}
             </button>
           ))}
+          </div>
+          <Link
+            to="/philosophers/timeline"
+            className="text-sm flex items-center gap-1.5 transition-opacity hover:opacity-70"
+            style={{ color: "var(--accent)", fontFamily: '"Noto Serif JP", serif' }}
+          >
+            <span>⏱</span> タイムラインで見る
+          </Link>
         </div>
 
         {isLoading ? (
