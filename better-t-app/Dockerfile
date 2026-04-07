@@ -50,6 +50,9 @@ RUN bun run build && \
 FROM gcr.io/distroless/cc-debian12
 # FROM oven/bun:1-slim
 WORKDIR /app
+# マイグレーションフォルダを明示的に指定する環境変数
+# runMigrations() はこの変数を優先して参照する
+ENV MIGRATIONS_FOLDER=/app/migrations
 # Bun ランタイム
 COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
 # フロントエンド (SPA 静的ファイル)
@@ -57,10 +60,8 @@ COPY --from=builder /app/apps/web/dist ./web
 # バックエンド (バンドル済みサーバー - better-auth/hono/@orpc/drizzle-orm 等は全てインライン済み)
 COPY --from=builder /app/apps/server/dist ./server
 # マイグレーション SQL ファイル
-# bun build / tsdown (rolldown) は import.meta.dirname をビルド時にソースファイルの
-# ディレクトリパス (/app/packages/db/src) にインライン展開する。
-# そのため migrate() が参照するパスは /app/packages/db/src/migrations になる。
-COPY --from=builder /app/packages/db/src/migrations ./packages/db/src/migrations
+# MIGRATIONS_FOLDER=/app/migrations と対応する場所に配置する
+COPY --from=builder /app/packages/db/src/migrations ./migrations
 # シードスクリプト（バンドル済み）
 COPY --from=builder /app/packages/db/dist/seed.mjs ./seed/seed.mjs
 # libsql JS ラッパー + linux-x64-gnu native binary（その他の依存は tsdown バンドルに包含済み）
