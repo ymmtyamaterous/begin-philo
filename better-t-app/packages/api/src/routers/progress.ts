@@ -159,4 +159,21 @@ export const progressRouter = {
 
       return { success: true, courseCompleted };
     }),
+
+  uncompleteLesson: protectedProcedure
+    .input(z.object({ lessonId: z.string() }))
+    .handler(async ({ input, context }) => {
+      const userId = context.session.user.id;
+
+      await db
+        .delete(userLessonProgress)
+        .where(
+          and(
+            eq(userLessonProgress.userId, userId),
+            eq(userLessonProgress.lessonId, input.lessonId),
+          ),
+        );
+
+      return { success: true };
+    }),
 };
