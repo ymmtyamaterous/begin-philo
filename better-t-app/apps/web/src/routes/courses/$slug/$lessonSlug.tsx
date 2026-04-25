@@ -6,6 +6,7 @@ import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 
 import { QuizModal } from "@/components/quiz-modal";
+import { authClient } from "@/lib/auth-client";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/courses/$slug/$lessonSlug")({
@@ -17,17 +18,30 @@ function LessonPage() {
   const queryClient = useQueryClient();
   const [quizOpen, setQuizOpen] = useState(false);
 
+  const { data: session } = authClient.useSession();
+
   const { data, isLoading } = useQuery(
     orpc.courses.getLesson.queryOptions({ input: { courseSlug: slug, lessonSlug } }),
   );
 
+  const { data: progress } = useQuery({
+    ...orpc.progress.get.queryOptions(),
+    enabled: !!session,
+  });
+
   const completeLesson = useMutation(
     orpc.progress.completeLesson.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["progress"] });
+        queryClient.invalidateQueries({
+          queryKey: orpc.progress.get.queryOptions().queryKey,
+        });
       },
     }),
   );
+
+  const isCompleted =
+    !!progress?.completedLessons.some((l) => l.lessonId === data?.id) ||
+    completeLesson.isSuccess;
 
   if (isLoading) {
     return (
@@ -128,14 +142,30 @@ function LessonPage() {
               : "このレッスンを学習し終えたら完了にしましょう。"}
           </p>
           {data.hasQuiz ? (
-            <button
-              type="button"
-              onClick={() => setQuizOpen(true)}
-              className="px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
-              style={{ backgroundColor: "var(--accent)", color: "var(--paper)" }}
+            isCompleted ? (
+              <div
+                className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium"
+                style={{ backgroundColor: "var(--green-dark)", color: "var(--paper)" }}
+              >
+                ✓ 完了済み
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setQuizOpen(true)}
+                className="px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                style={{ backgroundColor: "var(--accent)", color: "var(--paper)" }}
+              >
+                ℹ️ クイズを完了する
+              </button>
+            )
+          ) : isCompleted ? (
+            <div
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium"
+              style={{ backgroundColor: "var(--green-dark)", color: "var(--paper)" }}
             >
-              ℹ️ クイズを完了する
-            </button>
+              ✓ 完了済み
+            </div>
           ) : (
             <button
               type="button"
