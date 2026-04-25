@@ -85,6 +85,10 @@ export default function UserMenu() {
             {session.user.email}
           </DropdownMenuItem>
           <DropdownMenuSeparator style={{ backgroundColor: "rgba(139,69,19,0.12)" }} />
+          <DropdownMenuItem asChild style={{ fontFamily: '"Noto Serif JP", serif', fontSize: "0.875rem" }}>
+            <Link to="/dashboard">マイページ</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator style={{ backgroundColor: "rgba(139,69,19,0.12)" }} />
           <DropdownMenuItem
             variant="destructive"
             style={{ fontFamily: '"Noto Serif JP", serif', fontSize: "0.875rem" }}

@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { authClient } from "@/lib/auth-client";
 import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/courses/$slug/")({
@@ -15,9 +16,31 @@ const DIFFICULTY_LABELS: Record<string, string> = {
 
 function CourseDetailPage() {
   const { slug } = Route.useParams();
+  const queryClient = useQueryClient();
+
+  const { data: session } = authClient.useSession();
 
   const { data, isLoading } = useQuery(
     orpc.courses.get.queryOptions({ input: { slug } }),
+  );
+
+  const { data: progress } = useQuery({
+    ...orpc.progress.get.queryOptions(),
+    enabled: !!session,
+  });
+
+  const completedLessonIds = new Set(
+    progress?.completedLessons.map((l) => l.lessonId) ?? [],
+  );
+
+  const uncompleteLesson = useMutation(
+    orpc.progress.uncompleteLesson.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: orpc.progress.get.queryOptions().queryKey,
+        });
+      },
+    }),
   );
 
   if (isLoading) {
@@ -110,53 +133,76 @@ function CourseDetailPage() {
           カリキュラム
         </h2>
         <ol className="flex flex-col gap-3">
-          {data.lessons.map((lesson) => (
-            <li key={lesson.id}>
-              <Link
-                to="/courses/$slug/$lessonSlug"
-                params={{ slug, lessonSlug: lesson.slug }}
-                className="group flex items-center gap-4 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
-                style={{
-                  backgroundColor: "var(--aged)",
-                  border: "1px solid rgba(139,69,19,0.1)",
-                }}
-              >
-                <span
-                  className="text-xl font-bold w-8 text-center shrink-0"
+          {data.lessons.map((lesson) => {
+            const completed = completedLessonIds.has(lesson.id);
+            return (
+              <li key={lesson.id} className="flex items-stretch gap-2">
+                <Link
+                  to="/courses/$slug/$lessonSlug"
+                  params={{ slug, lessonSlug: lesson.slug }}
+                  className="group flex flex-1 items-center gap-4 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                   style={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    color: "var(--light-muted)",
+                    backgroundColor: completed
+                      ? "rgba(34,197,94,0.07)"
+                      : "var(--aged)",
+                    border: completed
+                      ? "1px solid rgba(34,197,94,0.25)"
+                      : "1px solid rgba(139,69,19,0.1)",
                   }}
                 >
-                  {lesson.number}
-                </span>
-                <div className="flex-1">
-                  <p
-                    className="text-sm font-medium transition-colors group-hover:text-[var(--accent)]"
-                    style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                  <span
+                    className="text-xl font-bold w-8 text-center shrink-0"
+                    style={{
+                      fontFamily: '"Cormorant Garamond", serif',
+                      color: completed ? "var(--green-dark)" : "var(--light-muted)",
+                    }}
                   >
-                    {lesson.title}
-                  </p>
-                  {lesson.description && (
-                    <p className="text-xs mt-0.5" style={{ color: "var(--light-muted)" }}>
-                      {lesson.description}
-                    </p>
-                  )}
-                </div>
-                {lesson.estimatedMinutes && (
-                  <span className="text-xs shrink-0" style={{ color: "var(--light-muted)" }}>
-                    {lesson.estimatedMinutes} 分
+                    {completed ? "✓" : lesson.number}
                   </span>
+                  <div className="flex-1">
+                    <p
+                      className="text-sm font-medium transition-colors group-hover:text-[var(--accent)]"
+                      style={{ fontFamily: '"Shippori Mincho", serif', color: "var(--ink)" }}
+                    >
+                      {lesson.title}
+                    </p>
+                    {lesson.description && (
+                      <p className="text-xs mt-0.5" style={{ color: "var(--light-muted)" }}>
+                        {lesson.description}
+                      </p>
+                    )}
+                  </div>
+                  {lesson.estimatedMinutes && (
+                    <span className="text-xs shrink-0" style={{ color: "var(--light-muted)" }}>
+                      {lesson.estimatedMinutes} 分
+                    </span>
+                  )}
+                  <span
+                    className="text-base transition-transform group-hover:translate-x-1"
+                    style={{ color: completed ? "var(--green-dark)" : "var(--light-muted)" }}
+                  >
+                    {completed ? "✓" : "→"}
+                  </span>
+                </Link>
+                {session && completed && (
+                  <button
+                    type="button"
+                    onClick={() => uncompleteLesson.mutate({ lessonId: lesson.id })}
+                    disabled={uncompleteLesson.isPending}
+                    title="未完了に戻す"
+                    className="shrink-0 px-3 rounded-xl text-xs transition-all duration-200 hover:opacity-70"
+                    style={{
+                      backgroundColor: "rgba(139,69,19,0.06)",
+                      border: "1px solid rgba(139,69,19,0.1)",
+                      color: "var(--philo-muted)",
+                    }}
+                  >
+                    取り消す
+                  </button>
                 )}
-                <span
-                  className="text-base transition-transform group-hover:translate-x-1"
-                  style={{ color: "var(--light-muted)" }}
-                >
-                  →
-                </span>
-              </Link>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ol>
       </div>
     </div>
