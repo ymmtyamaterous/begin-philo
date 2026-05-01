@@ -184,6 +184,39 @@ const philosophers = [
     keyIdeas: asJson(["神は死んだ", "価値の再評価", "永劫回帰", "自己超克"]),
     majorWorks: asJson(["『ツァラトゥストラはこう語った』", "『善悪の彼岸』", "『道徳の系譜』"]),
   },
+  {
+    id: "phil-wittgenstein",
+    slug: "wittgenstein",
+    name: "ヴィトゲンシュタイン",
+    nameEn: "Ludwig Wittgenstein",
+    initial: "W",
+    era: "1889 – 1951",
+    birthYear: 1889,
+    deathYear: 1951,
+    region: "現代オーストリア・イギリス",
+    shortBio: "言語と世界の限界を問い、哲学の問題の多くを言語の混乱として捉え直した20世紀最大の哲学者の一人。",
+    biography: `# ヴィトゲンシュタインとは誰か
+
+ルートヴィヒ・ヴィトゲンシュタインは、20世紀の哲学に最も大きな影響を与えた人物のひとりです。ウィーン生まれの彼は、最初は工学を学びましたが、やがて論理学と哲学に転じ、ラッセルのもとでケンブリッジ大学に学びました。
+
+## 前期と後期——二つの哲学
+
+ヴィトゲンシュタインの哲学は、大きく前期と後期に分かれます。
+
+**前期**の代表作『論理哲学論考』（1921年）では、言語が世界を映し出す**写像**であると考えました。言語で表現できることと、表現できないこと（語りえないもの）の境界を引くことが目標でした。
+
+**後期**の代表作『哲学的探究』（1953年、没後刊行）では、前期の立場を自ら批判し、言語の意味は固定した対応関係にあるのではなく、**実際の使われ方（使用）によって決まる**と考えるようになりました。
+
+## 語りえないもの
+
+「語りえないことについては、沈黙しなければならない」という言葉は、哲学の多くの問いが言語の限界を超えていることを示しています。これは哲学の放棄ではなく、**何が言語で扱えるかを明確にすること**が哲学の仕事だという主張です。
+
+## 言語ゲーム
+
+後期ヴィトゲンシュタインは、言語を一つの統一したシステムとして見るのをやめました。言語はさまざまな**ゲーム**の集まりであり、それぞれが異なるルールと文脈を持っています。意味とは、言葉が実際に使われる文脈の中にある、と考えたのです。`,
+    keyIdeas: asJson(["言語ゲーム", "写像理論", "語りえないもの", "家族的類似性"]),
+    majorWorks: asJson(["『論理哲学論考』", "『哲学的探究』"]),
+  },
 ];
 
 const themes = [
@@ -418,6 +451,68 @@ const articles = [
     publishedAt: at("2025-02-15T09:00:00.000Z"),
     themeSlugs: ["politics", "ethics"],
   },
+  {
+    id: "article-wittgenstein-tractatus",
+    slug: "wittgenstein-tractatus",
+    title: "「語りえないことについては、沈黙しなければならない」——ヴィトゲンシュタインと言語の限界",
+    description: "前期ヴィトゲンシュタインの主著『論理哲学論考』を手がかりに、言語が世界を映す写像理論と「語りえないもの」の意味を読み解きます。",
+    content: `# 言語はどこまで届くのか
+
+ヴィトゲンシュタインの『論理哲学論考』は、哲学書のなかでも極めて独特の形式を持っています。命題を番号で整理し、最後のひとことで締め括ります。
+
+「語りえないことについては、沈黙しなければならない。」
+
+## 写像理論とは何か
+
+前期ヴィトゲンシュタインは、言語が世界の**写像**（うつし）であると考えました。意味のある命題は、世界の事実の状態を映し出しています。たとえば「リンゴが机の上にある」という文は、実際に起こりうる事実の構造を映しています。言語と世界は、同じ**論理的形式**を共有しているのです。
+
+## 語りえないもの
+
+ところが、倫理や美、神について語る文は、この写像の構造に収まりません。これらは事実を述べるのではなく、何か別の次元に属しています。ヴィトゲンシュタインはこれを「語りえないもの」と呼び、沈黙を勧めました。
+
+しかしこれは、これらのことが**重要ではない**という意味ではありません。むしろ、語りえないものこそが最も大切なのかもしれない、というニュアンスを含んでいます。
+
+## 哲学の仕事とは
+
+前期ヴィトゲンシュタインにとって、哲学の仕事は新しい真理を発見することではありません。言語を明確にし、どの問いが意味を持ち、どの問いが無意味な混乱から来ているかを見極めることでした。`,
+    tag: "言語哲学",
+    readingTime: 8,
+    featured: true,
+    philosopherId: "phil-wittgenstein",
+    publishedAt: at("2025-02-20T09:00:00.000Z"),
+    themeSlugs: ["epistemology", "ontology"],
+  },
+  {
+    id: "article-wittgenstein-language-games",
+    slug: "wittgenstein-language-games",
+    title: "意味とは使用である——言語ゲームと後期ヴィトゲンシュタイン",
+    description: "後期ヴィトゲンシュタインの中心概念「言語ゲーム」を通じて、言葉の意味が実際の使われ方のなかにあるという考え方を探ります。",
+    content: `# 「意味とは使用だ」とはどういうことか
+
+後期ヴィトゲンシュタインは、前期の自分を批判しました。言語を単なる写像と見ることは、言語の豊かさを見逃すと考えたのです。
+
+## 言語ゲームという発想
+
+『哲学的探究』でヴィトゲンシュタインが提示したのは、**言語ゲーム**という概念です。言語は、ひとつの統一されたシステムではありません。命令する、約束する、冗談を言う、祈る——これらはすべて違うルールで動く「ゲーム」です。
+
+「善い」という言葉も、料理を評価するときと、倫理的な判断を下すときとでは、異なるゲームに属しています。意味は、文脈と使用の中にあるのです。
+
+## 家族的類似性
+
+ヴィトゲンシュタインは「ゲーム」という言葉自体も分析しました。チェスもサッカーも「ゲーム」ですが、共通の本質はありません。それでも同じ語を使えるのは、**家族の顔立ちのような重なり合う類似性**（家族的類似性）があるからです。
+
+## 哲学の問題はどこから来るか
+
+後期ヴィトゲンシュタインの診断によると、哲学の問題の多くは、**言葉がひとつのゲームから別のゲームに持ち込まれる**ときに生まれます。
+
+「時間とは何か」「心とは何か」——これらは日常の使用文脈を外れた問いです。哲学の仕事は答えを出すことより、言語がどのように機能しているかを示すことです。`,
+    tag: "言語哲学",
+    readingTime: 7,
+    featured: false,
+    philosopherId: "phil-wittgenstein",
+    publishedAt: at("2025-02-27T09:00:00.000Z"),
+    themeSlugs: ["epistemology", "self"],
+  },
 ];
 
 const courses = [
@@ -576,6 +671,62 @@ const courses = [
       },
     ],
   },
+  {
+    id: "course-language-and-philosophy",
+    slug: "language-and-philosophy",
+    number: 4,
+    title: "言語と哲学——ヴィトゲンシュタインから学ぶ",
+    description: "言語が哲学にとってなぜ重要なのかを、ヴィトゲンシュタインの前期・後期の思想を通じて探るコース。",
+    difficulty: "intermediate" as const,
+    estimatedMinutes: 56,
+    lessons: [
+      {
+        id: "lesson-language-and-world",
+        slug: "language-and-world",
+        number: 1,
+        title: "言語は世界を映す",
+        description: "前期ヴィトゲンシュタインの写像理論と語りえないものを学ぶ。",
+        estimatedMinutes: 18,
+        content: `# 言語と世界の対応
+
+前期ヴィトゲンシュタインは、意味のある文は世界の事実の構造を映していると考えました。この考えによれば、倫理や神について語る文は事実を映せないため、「語りえない」領域に属します。
+
+> 語りえないことについては、沈黙しなければならない。`,
+      },
+      {
+        id: "lesson-meaning-as-use",
+        slug: "meaning-as-use",
+        number: 2,
+        title: "意味は使用にある",
+        description: "後期ヴィトゲンシュタインの言語ゲームと意味の使用説を学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 使用の中に意味がある
+
+後期ヴィトゲンシュタインは、言葉の意味はその使われ方のなかにあると考えました。
+
+- 命令する言語ゲーム
+- 報告する言語ゲーム
+- 冗談を言う言語ゲーム
+
+それぞれのゲームには異なるルールがあり、意味はそのルールのなかで決まります。`,
+      },
+      {
+        id: "lesson-philosophy-as-therapy",
+        slug: "philosophy-as-therapy",
+        number: 3,
+        title: "哲学という治療",
+        description: "ヴィトゲンシュタインが哲学の問題をどう解消しようとしたかを学ぶ。",
+        estimatedMinutes: 18,
+        content: `# 哲学の問題を解消する
+
+ヴィトゲンシュタインにとって哲学の問題の多くは、言語の混乱から生まれます。
+
+言葉が本来の使用文脈を離れて使われるとき、混乱が起きます。哲学の仕事は、その混乱を解きほぐし、言葉を正しい文脈に戻すことです。
+
+> 哲学とは、言葉というハエ取り壺からハエを逃す道を示すことだ。`,
+      },
+    ],
+  },
 ];
 
 const quotes = [
@@ -614,6 +765,18 @@ const quotes = [
     text: "怪物と戦う者は、自らが怪物とならぬよう気をつけよ。",
     source: "『善悪の彼岸』",
     philosopherId: "phil-nietzsche",
+  },
+  {
+    id: "quote-wittgenstein-1",
+    text: "語りえないことについては、沈黙しなければならない。",
+    source: "『論理哲学論考』",
+    philosopherId: "phil-wittgenstein",
+  },
+  {
+    id: "quote-wittgenstein-2",
+    text: "私の言語の限界は、私の世界の限界を意味する。",
+    source: "『論理哲学論考』",
+    philosopherId: "phil-wittgenstein",
   },
 ];
 
@@ -689,6 +852,33 @@ const glossaryTerms = [
     detail: "アリストテレス倫理学では、徳は過剰と不足のあいだにある。",
     philosopherId: "phil-aristotle",
     themeId: "theme-ethics",
+  },
+  {
+    id: "glossary-language-game",
+    term: "言語ゲーム",
+    reading: "げんごげーむ",
+    definition: "言語をさまざまな規則に従った活動（ゲーム）の集合として捉えるヴィトゲンシュタインの概念。",
+    detail: "後期ヴィトゲンシュタインが提示した考え方。意味は固定した本質ではなく、言葉が実際に使われる文脈と実践（使用）のなかにあると主張する。",
+    philosopherId: "phil-wittgenstein",
+    themeId: "theme-epistemology",
+  },
+  {
+    id: "glossary-picture-theory",
+    term: "写像理論",
+    reading: "しゃぞうりろん",
+    definition: "言語の命題は世界の事実の論理的構造を映し出すという、前期ヴィトゲンシュタインの言語論。",
+    detail: "『論理哲学論考』で展開された考え方。言語と世界は同じ論理形式を共有しており、意味ある命題は世界の可能な状態を写像する。",
+    philosopherId: "phil-wittgenstein",
+    themeId: "theme-ontology",
+  },
+  {
+    id: "glossary-family-resemblance",
+    term: "家族的類似性",
+    reading: "かぞくてきるいじせい",
+    definition: "概念が共通の本質ではなく、重なり合う類似性によってまとめられるというヴィトゲンシュタインの考え方。",
+    detail: "後期ヴィトゲンシュタインが『哲学的探究』で示した。例えば「ゲーム」という語で呼ばれるものに共通の本質はないが、家族の顔立ちのような部分的な類似性が複数重なり合っている。",
+    philosopherId: "phil-wittgenstein",
+    themeId: "theme-epistemology",
   },
 ];
 
@@ -818,6 +1008,32 @@ async function seed() {
         { id: "quiz-d2-o4", text: "外界の実在性", isCorrect: false, order: 4 },
       ],
     },
+    {
+      id: "quiz-language-world-1",
+      lessonId: "lesson-language-and-world",
+      question: "前期ヴィトゲンシュタインの写像理論では、言語の意味はどのように成立すると考えましたか？",
+      explanation: "写像理論では、意味のある命題は世界の事実の構造を論理的に映し出すものです。言語と世界は同じ論理形式を共有します。",
+      order: 1,
+      options: [
+        { id: "quiz-lw1-o1", text: "言葉は慣習的に意味を持ち、文化によって決まる", isCorrect: false, order: 1 },
+        { id: "quiz-lw1-o2", text: "命題は世界の事実の構造を論理的に映し出す", isCorrect: true, order: 2 },
+        { id: "quiz-lw1-o3", text: "言語は感情を表現するための道具である", isCorrect: false, order: 3 },
+        { id: "quiz-lw1-o4", text: "意味は神から与えられた固定した本質に基づく", isCorrect: false, order: 4 },
+      ],
+    },
+    {
+      id: "quiz-meaning-use-1",
+      lessonId: "lesson-meaning-as-use",
+      question: "後期ヴィトゲンシュタインが「意味とは使用だ」と述べたとき、最も近い意味はどれですか？",
+      explanation: "後期ヴィトゲンシュタインは、言葉の意味はその言葉が実際にどのように使われているかという文脈と実践の中にあると考えました。",
+      order: 1,
+      options: [
+        { id: "quiz-mu1-o1", text: "言葉は辞書に載っている定義がその意味である", isCorrect: false, order: 1 },
+        { id: "quiz-mu1-o2", text: "言葉の意味は実際の使われ方と文脈のなかにある", isCorrect: true, order: 2 },
+        { id: "quiz-mu1-o3", text: "言葉の意味は話者の意図によってのみ決まる", isCorrect: false, order: 3 },
+        { id: "quiz-mu1-o4", text: "言葉の意味は世界の物事との対応関係にある", isCorrect: false, order: 4 },
+      ],
+    },
   ];
 
   // 記事シリーズデータ
@@ -841,6 +1057,16 @@ async function seed() {
         { articleId: "article-virtue-ethics", order: 1 },
         { articleId: "article-confucius-ren-li", order: 2 },
         { articleId: "article-nietzsche-god-is-dead", order: 3 },
+      ],
+    },
+    {
+      id: "series-wittgenstein",
+      slug: "wittgenstein-philosophy",
+      title: "ヴィトゲンシュタインの哲学を読む",
+      description: "前期の写像理論から後期の言語ゲームへと、ヴィトゲンシュタインの思想の転回を追うシリーズ。",
+      items: [
+        { articleId: "article-wittgenstein-tractatus", order: 1 },
+        { articleId: "article-wittgenstein-language-games", order: 2 },
       ],
     },
   ];
