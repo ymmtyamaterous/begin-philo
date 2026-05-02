@@ -1596,7 +1596,7 @@ async function seed() {
         lessonId: sql`excluded.lesson_id`,
         question: sql`excluded.question`,
         explanation: sql`excluded.explanation`,
-        order: sql`excluded.order`,
+        order: sql`excluded."order"`,
       },
     });
     await db.insert(quizOption).values(
@@ -1606,7 +1606,7 @@ async function seed() {
       set: {
         text: sql`excluded.text`,
         isCorrect: sql`excluded.is_correct`,
-        order: sql`excluded.order`,
+        order: sql`excluded."order"`,
       },
     });
   }
