@@ -217,6 +217,45 @@ const philosophers = [
     keyIdeas: asJson(["言語ゲーム", "写像理論", "語りえないもの", "家族的類似性"]),
     majorWorks: asJson(["『論理哲学論考』", "『哲学的探究』"]),
   },
+  {
+    id: "phil-heidegger",
+    slug: "heidegger",
+    name: "ハイデガー",
+    nameEn: "Martin Heidegger",
+    initial: "H",
+    era: "1889 – 1976",
+    birthYear: 1889,
+    deathYear: 1976,
+    region: "現代ドイツ",
+    shortBio: "「存在とは何か」を根本から問い直し、現存在・世界内存在・死への存在といった概念で20世紀哲学に革命をもたらした哲学者。",
+    biography: `# ハイデガーとは誰か
+
+マルティン・ハイデガーは、20世紀最大の哲学者のひとりです。ドイツ南部の小村メスキルヒに生まれ、フライブルク大学でエドムント・フッサールに師事しました。主著『存在と時間』（1927年）は、現代哲学の方向を大きく変えた書です。
+
+## 存在の問いの復活
+
+ハイデガーは、哲学の歴史全体が**存在忘却**に陥っていると診断しました。私たちは「存在するもの（存在者）」については語りますが、「存在するとはそもそもどういうことか」という問い——**存在の問い**——を忘れてしまっています。
+
+ハイデガーの哲学は、この忘れられた問いを取り戻すための試みです。
+
+## 現存在（Dasein）
+
+ハイデガーは人間を「現存在（Dasein）」と呼びます。これは「そこに在ること」を意味し、人間が**世界のなかで状況に巻き込まれながら存在している**ことを強調します。
+
+## 世界内存在
+
+現存在は、まず理論的に世界を観察するのではなく、**道具を使い、他者とともに、気遣いながら**世界に関わっています。この関わりの構造を「世界内存在（In-der-Welt-sein）」と呼びます。
+
+私たちが使うハンマーは、叩いているときには「手元にある（手前に在る）」存在で、理論的な対象としてではなく機能として現れます。
+
+## 死への存在
+
+ハイデガーにとって、死は避けられない「固有の可能性」です。死をあらかじめ引き受けることで、現存在は本来の自分自身に戻ることができます。
+
+日常の「ひと（das Man）」の流れに流されず、自分の存在を引き受けて生きること——これが**本来性**です。`,
+    keyIdeas: asJson(["現存在", "世界内存在", "死への存在", "本来性", "存在忘却"]),
+    majorWorks: asJson(["『存在と時間』", "『技術への問い』", "『形而上学とは何か』"]),
+  },
 ];
 
 const themes = [
@@ -513,6 +552,76 @@ const articles = [
     publishedAt: at("2025-02-27T09:00:00.000Z"),
     themeSlugs: ["epistemology", "self"],
   },
+  {
+    id: "article-heidegger-being-in-world",
+    slug: "heidegger-being-in-world",
+    title: "私たちはまず「世界のなかに」いる——ハイデガーの世界内存在",
+    description: "ハイデガーの『存在と時間』を手がかりに、人間が理論より先に世界への関わりのなかにあるという「世界内存在」の考え方を解説します。",
+    content: `# 道具から始まる哲学
+
+哲学の伝統では、人間はまず世界を「観察する主体」として描かれてきました。デカルトの「我思う」がその典型です。
+
+しかしハイデガーは問います——本当に私たちは、まず世界を外側から眺めているのでしょうか？
+
+## 手元性とは何か
+
+ハンマーで釘を打っているとき、私たちはハンマーを「意識」していません。ハンマーは手の延長として機能しており、**道具として透明に使われています**。これをハイデガーは「手元にある存在（手前性）」と呼びます。
+
+道具が壊れてはじめて、私たちはそれを対象として意識します。つまり「観察する主体と対象」という関係は、もともとの関わりが崩れたときに生じる**派生的な構造**です。
+
+## 世界内存在の構造
+
+現存在は、まず気遣いながら、道具を使い、他者とともに世界にいます。この関わりの全体構造を、ハイデガーは**世界内存在（In-der-Welt-sein）**と呼びます。
+
+「世界の中に」という言い方は、単に空間的な意味ではありません。世界とは、意味の網の目——何がどんな目的のためにあるか、誰と何をするかという関係の全体です。
+
+## 現存在は「そこに投げ込まれている」
+
+私たちは、時代・言語・文化・身体を自分で選んでこの世界に来たわけではありません。ハイデガーはこれを**被投性**と呼びます。
+
+しかしその被投性のなかで、私たちは可能性へと向かって自分を投企します。この張力こそが人間存在の構造です。`,
+    tag: "存在論",
+    readingTime: 9,
+    featured: true,
+    philosopherId: "phil-heidegger",
+    publishedAt: at("2025-03-05T09:00:00.000Z"),
+    themeSlugs: ["ontology", "self"],
+  },
+  {
+    id: "article-heidegger-death-authenticity",
+    slug: "heidegger-death-authenticity",
+    title: "死を引き受けることで、自分らしく生きられる——ハイデガーの本来性",
+    description: "ハイデガーの「死への存在」と「本来性」の概念を通じて、日常性の流れに飲み込まれない生き方を考えます。",
+    content: `# 「ひと（das Man）」の支配
+
+日常生活において、私たちはほとんどの場合、「ひと（das Man）」として生きています。「ひと」とは、誰でもない匿名の存在——「みんなそうしているから」「世間ではそうなっている」という流れです。
+
+ハイデガーは、この日常性のなかでは、現存在は自分固有の存在可能性から引き離されてしまうと考えました。
+
+## 死という固有の可能性
+
+死だけは、誰にも代わってもらえません。私の死は絶対に私自身のものです。
+
+ハイデガーは、死を「可能性の不可能性」——すべての可能性が奪われる究極の可能性——として捉えます。この死をあらかじめ引き受けること（**先駆的決意性**）によって、現存在は日常性から覚め、自分固有の存在可能性に立ち返ります。
+
+## 本来性と非本来性
+
+本来性とは、英雄的な孤独を生きることではありません。ひとの流れに流されながらも、自分の存在を見失わずに関わること——それが**本来的な生き方**です。
+
+非本来性も本来性も、同じ日常のなかにあります。違いは、自分の有限性を引き受けているかどうかです。
+
+## 不安という気分
+
+ハイデガーは「不安」を重要な気分として取り上げます。不安において、現存在は日常性の意味から切り離され、**自分の存在そのものへと向き合わされます**。
+
+不安は病ではなく、本来性への入口です。`,
+    tag: "存在論",
+    readingTime: 8,
+    featured: false,
+    philosopherId: "phil-heidegger",
+    publishedAt: at("2025-03-12T09:00:00.000Z"),
+    themeSlugs: ["ontology", "self", "meaning-of-life"],
+  },
 ];
 
 const courses = [
@@ -727,6 +836,60 @@ const courses = [
       },
     ],
   },
+  {
+    id: "course-heidegger-existence",
+    slug: "heidegger-existence",
+    number: 5,
+    title: "存在を問う——ハイデガーの哲学",
+    description: "現存在・世界内存在・死への存在という概念を通じて、ハイデガーの実存哲学の核心に迫るコース。",
+    difficulty: "advanced" as const,
+    estimatedMinutes: 62,
+    lessons: [
+      {
+        id: "lesson-dasein",
+        slug: "dasein",
+        number: 1,
+        title: "現存在とは何か",
+        description: "ハイデガーが人間存在をなぜ「現存在」と呼んだかを学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 存在の問いを問い直す
+
+ハイデガーは哲学史全体が「存在者」を論じながら「存在そのもの」を問わずにきたと批判しました。
+
+現存在（Dasein）とは、「そこに在ること」を意味し、自分の存在を問題にできる唯一の存在者です。
+
+- 石は存在するが、石は自分の存在を問いません
+- 動物は存在するが、死を見越して生きることはしません
+- 人間（現存在）だけが、存在を問題にしながら生きています`,
+      },
+      {
+        id: "lesson-being-in-world",
+        slug: "being-in-world",
+        number: 2,
+        title: "世界内存在の構造",
+        description: "ハイデガーの世界内存在と道具的存在の概念を学ぶ。",
+        estimatedMinutes: 22,
+        content: `# まず世界の中にいる
+
+私たちは最初から世界のなかに投げ込まれています。ハンマーを使うとき、ハンマーは対象ではなく道具として「消えて」います。
+
+世界内存在とは、この関わりの全体構造です。`,
+      },
+      {
+        id: "lesson-death-and-authenticity",
+        slug: "death-and-authenticity",
+        number: 3,
+        title: "死への存在と本来性",
+        description: "死を引き受けることがなぜ本来性につながるかを学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 死という固有の可能性
+
+死だけは誰にも代わってもらえません。ハイデガーはこの事実を、現存在が本来性に目覚める契機として捉えます。
+
+「ひと（das Man）」の流れに乗って生きることは非本来的な生き方です。死への先駆的決意性が、本来の自己への道を開きます。`,
+      },
+    ],
+  },
 ];
 
 const quotes = [
@@ -777,6 +940,18 @@ const quotes = [
     text: "私の言語の限界は、私の世界の限界を意味する。",
     source: "『論理哲学論考』",
     philosopherId: "phil-wittgenstein",
+  },
+  {
+    id: "quote-heidegger-1",
+    text: "現存在の本質は、その実存にある。",
+    source: "『存在と時間』",
+    philosopherId: "phil-heidegger",
+  },
+  {
+    id: "quote-heidegger-2",
+    text: "死は、現存在が引き受けなければならない最も固有の可能性である。",
+    source: "『存在と時間』",
+    philosopherId: "phil-heidegger",
   },
 ];
 
@@ -879,6 +1054,33 @@ const glossaryTerms = [
     detail: "後期ヴィトゲンシュタインが『哲学的探究』で示した。例えば「ゲーム」という語で呼ばれるものに共通の本質はないが、家族の顔立ちのような部分的な類似性が複数重なり合っている。",
     philosopherId: "phil-wittgenstein",
     themeId: "theme-epistemology",
+  },
+  {
+    id: "glossary-dasein",
+    term: "現存在",
+    reading: "げんそんざい",
+    definition: "ハイデガーが人間存在を指して用いた概念。「そこに在る（Da-sein）」ことを意味し、世界へと開かれた存在のあり方を示す。",
+    detail: "単なる物体や動物と異なり、現存在は自分の存在を問題にできる存在者である。ハイデガーの実存分析の出発点。",
+    philosopherId: "phil-heidegger",
+    themeId: "theme-ontology",
+  },
+  {
+    id: "glossary-being-in-the-world",
+    term: "世界内存在",
+    reading: "せかいないそんざい",
+    definition: "現存在が道具・他者・文脈とともに世界に関わりながら存在しているという、ハイデガーの根本構造。",
+    detail: "「世界の中に入れられた主体」ではなく、気遣い・道具使用・他者との共存が不可分に結びついた存在のあり方を指す。",
+    philosopherId: "phil-heidegger",
+    themeId: "theme-ontology",
+  },
+  {
+    id: "glossary-authenticity",
+    term: "本来性",
+    reading: "ほんらいせい",
+    definition: "日常の匿名的な「ひと（das Man）」の流れに流されず、自分固有の存在可能性を引き受けて生きること。",
+    detail: "死への先駆的決意性によって開かれる生き方。非本来性（ひとの流れへの埋没）との対比で理解される。",
+    philosopherId: "phil-heidegger",
+    themeId: "theme-self",
   },
 ];
 
@@ -1034,6 +1236,32 @@ async function seed() {
         { id: "quiz-mu1-o4", text: "言葉の意味は世界の物事との対応関係にある", isCorrect: false, order: 4 },
       ],
     },
+    {
+      id: "quiz-dasein-1",
+      lessonId: "lesson-dasein",
+      question: "ハイデガーが「現存在（Dasein）」という言葉で強調したことは何ですか？",
+      explanation: "現存在とは「そこに在ること」を意味し、人間が世界のなかに状況として巻き込まれながら存在しており、かつ自分の存在を問題にできる唯一の存在者であることを示します。",
+      order: 1,
+      options: [
+        { id: "quiz-da1-o1", text: "人間が純粋な思考主体として世界を認識すること", isCorrect: false, order: 1 },
+        { id: "quiz-da1-o2", text: "人間が世界のなかに巻き込まれながら自分の存在を問える存在者であること", isCorrect: true, order: 2 },
+        { id: "quiz-da1-o3", text: "人間が神の似姿として作られた存在であること", isCorrect: false, order: 3 },
+        { id: "quiz-da1-o4", text: "人間が理性によって動物と区別される存在であること", isCorrect: false, order: 4 },
+      ],
+    },
+    {
+      id: "quiz-authenticity-1",
+      lessonId: "lesson-death-and-authenticity",
+      question: "ハイデガーにおける「本来性」の説明として最も適切なものはどれですか？",
+      explanation: "本来性とは「ひと（das Man）」の匿名的な流れに飲み込まれず、死という固有の可能性を先駆的に引き受けることで自分固有の存在可能性に立ち返ることです。",
+      order: 1,
+      options: [
+        { id: "quiz-au1-o1", text: "社会のルールに従って模範的な生き方をすること", isCorrect: false, order: 1 },
+        { id: "quiz-au1-o2", text: "死という固有の可能性を引き受け、自分の存在可能性に立ち返ること", isCorrect: true, order: 2 },
+        { id: "quiz-au1-o3", text: "日常から離れて孤独に哲学を実践すること", isCorrect: false, order: 3 },
+        { id: "quiz-au1-o4", text: "本能のままに自然な欲求に従って生きること", isCorrect: false, order: 4 },
+      ],
+    },
   ];
 
   // 記事シリーズデータ
@@ -1067,6 +1295,16 @@ async function seed() {
       items: [
         { articleId: "article-wittgenstein-tractatus", order: 1 },
         { articleId: "article-wittgenstein-language-games", order: 2 },
+      ],
+    },
+    {
+      id: "series-heidegger",
+      slug: "heidegger-philosophy",
+      title: "ハイデガーの実存哲学を読む",
+      description: "世界内存在から死への存在・本来性まで、ハイデガーの思想の核心を追うシリーズ。",
+      items: [
+        { articleId: "article-heidegger-being-in-world", order: 1 },
+        { articleId: "article-heidegger-death-authenticity", order: 2 },
       ],
     },
   ];
