@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { db, runMigrations } from "./index";
 import {
   article,
@@ -12,8 +13,6 @@ import {
   quizOption,
   quote,
   theme,
-  userBookmark,
-  userLessonProgress,
 } from "./schema";
 
 const asJson = (value: string[]) => JSON.stringify(value);
@@ -1292,33 +1291,53 @@ async function seed() {
   // マイグレーションを実行（未適用のもののみ・冪等）
   await runMigrations();
 
-  // 既にデータが存在する場合はスキップ（冪等性の確保）
-  const existing = await db.select().from(philosopher).limit(1);
-  if (existing.length > 0) {
-    console.log("⏭️  既にシードデータが存在します。スキップします。");
-    return;
-  }
-
-  await db.delete(userBookmark);
-  await db.delete(userLessonProgress);
-  await db.delete(quiz);
-  await db.delete(quote);
-  await db.delete(glossaryTerm);
-  await db.delete(articleSeriesItem);
-  await db.delete(articleSeries);
+  // ジャンクションテーブルをクリア（ユーザーデータなし・再構築のため）
   await db.delete(articleTheme);
-  await db.delete(lesson);
-  await db.delete(article);
-  await db.delete(course);
-  await db.delete(theme);
-  await db.delete(philosopher);
+  await db.delete(articleSeriesItem);
 
-  await db.insert(philosopher).values(philosophers);
-  await db.insert(theme).values(themes);
+  await db.insert(philosopher).values(philosophers).onConflictDoUpdate({
+    target: philosopher.id,
+    set: {
+      slug: sql`excluded.slug`,
+      name: sql`excluded.name`,
+      nameEn: sql`excluded.name_en`,
+      initial: sql`excluded.initial`,
+      era: sql`excluded.era`,
+      birthYear: sql`excluded.birth_year`,
+      deathYear: sql`excluded.death_year`,
+      region: sql`excluded.region`,
+      shortBio: sql`excluded.short_bio`,
+      biography: sql`excluded.biography`,
+      keyIdeas: sql`excluded.key_ideas`,
+      majorWorks: sql`excluded.major_works`,
+    },
+  });
+  await db.insert(theme).values(themes).onConflictDoUpdate({
+    target: theme.id,
+    set: {
+      slug: sql`excluded.slug`,
+      number: sql`excluded.number`,
+      name: sql`excluded.name`,
+      description: sql`excluded.description`,
+    },
+  });
 
   await db.insert(article).values(
     articles.map(({ themeSlugs, ...item }) => item),
-  );
+  ).onConflictDoUpdate({
+    target: article.id,
+    set: {
+      slug: sql`excluded.slug`,
+      title: sql`excluded.title`,
+      description: sql`excluded.description`,
+      content: sql`excluded.content`,
+      tag: sql`excluded.tag`,
+      readingTime: sql`excluded.reading_time`,
+      featured: sql`excluded.featured`,
+      philosopherId: sql`excluded.philosopher_id`,
+      publishedAt: sql`excluded.published_at`,
+    },
+  });
 
   await db.insert(articleTheme).values(
     articles.flatMap((item) =>
@@ -1331,7 +1350,17 @@ async function seed() {
 
   await db.insert(course).values(
     courses.map(({ lessons: courseLessons, ...item }) => item),
-  );
+  ).onConflictDoUpdate({
+    target: course.id,
+    set: {
+      slug: sql`excluded.slug`,
+      number: sql`excluded.number`,
+      title: sql`excluded.title`,
+      description: sql`excluded.description`,
+      difficulty: sql`excluded.difficulty`,
+      estimatedMinutes: sql`excluded.estimated_minutes`,
+    },
+  });
 
   await db.insert(lesson).values(
     courses.flatMap((courseItem) =>
@@ -1340,7 +1369,18 @@ async function seed() {
         courseId: courseItem.id,
       })),
     ),
-  );
+  ).onConflictDoUpdate({
+    target: lesson.id,
+    set: {
+      slug: sql`excluded.slug`,
+      courseId: sql`excluded.course_id`,
+      number: sql`excluded.number`,
+      title: sql`excluded.title`,
+      description: sql`excluded.description`,
+      content: sql`excluded.content`,
+      estimatedMinutes: sql`excluded.estimated_minutes`,
+    },
+  });
 
   // クイズデータ
   const quizData = [
@@ -1550,23 +1590,62 @@ async function seed() {
   // クイズ插入
   for (const q of quizData) {
     const { options, ...quizRow } = q;
-    await db.insert(quiz).values(quizRow);
+    await db.insert(quiz).values(quizRow).onConflictDoUpdate({
+      target: quiz.id,
+      set: {
+        lessonId: sql`excluded.lesson_id`,
+        question: sql`excluded.question`,
+        explanation: sql`excluded.explanation`,
+        order: sql`excluded.order`,
+      },
+    });
     await db.insert(quizOption).values(
       options.map((opt) => ({ ...opt, quizId: q.id })),
-    );
+    ).onConflictDoUpdate({
+      target: quizOption.id,
+      set: {
+        text: sql`excluded.text`,
+        isCorrect: sql`excluded.is_correct`,
+        order: sql`excluded.order`,
+      },
+    });
   }
 
   // 記事シリーズ插入
   for (const s of seriesData) {
     const { items, ...seriesRow } = s;
-    await db.insert(articleSeries).values(seriesRow);
+    await db.insert(articleSeries).values(seriesRow).onConflictDoUpdate({
+      target: articleSeries.id,
+      set: {
+        slug: sql`excluded.slug`,
+        title: sql`excluded.title`,
+        description: sql`excluded.description`,
+      },
+    });
     await db.insert(articleSeriesItem).values(
       items.map((item) => ({ ...item, seriesId: s.id })),
-    );
+    ).onConflictDoNothing();
   }
 
-  await db.insert(quote).values(quotes);
-  await db.insert(glossaryTerm).values(glossaryTerms);
+  await db.insert(quote).values(quotes).onConflictDoUpdate({
+    target: quote.id,
+    set: {
+      text: sql`excluded.text`,
+      source: sql`excluded.source`,
+      philosopherId: sql`excluded.philosopher_id`,
+    },
+  });
+  await db.insert(glossaryTerm).values(glossaryTerms).onConflictDoUpdate({
+    target: glossaryTerm.id,
+    set: {
+      term: sql`excluded.term`,
+      reading: sql`excluded.reading`,
+      definition: sql`excluded.definition`,
+      detail: sql`excluded.detail`,
+      philosopherId: sql`excluded.philosopher_id`,
+      themeId: sql`excluded.theme_id`,
+    },
+  });
 
   console.log(`✅ Seeded ${philosophers.length} philosophers`);
   console.log(`✅ Seeded ${themes.length} themes`);
