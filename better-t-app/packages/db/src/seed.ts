@@ -256,6 +256,43 @@ const philosophers = [
     keyIdeas: asJson(["現存在", "世界内存在", "死への存在", "本来性", "存在忘却"]),
     majorWorks: asJson(["『存在と時間』", "『技術への問い』", "『形而上学とは何か』"]),
   },
+  {
+    id: "phil-kant",
+    slug: "kant",
+    name: "カント",
+    nameEn: "Immanuel Kant",
+    initial: "K",
+    era: "1724 – 1804",
+    birthYear: 1724,
+    deathYear: 1804,
+    region: "近代ドイツ",
+    shortBio: "「批判哲学」によって認識論と道徳論を刷新し、近代哲学の転換点を画した哲学者。定言命法と物自体の概念で知られる。",
+    biography: `# カントとは誰か
+
+イマヌエル・カントは、近代哲学において最も重要な転換点を作った哲学者のひとりです。プロイセンのケーニヒスベルク（現ロシア・カリーニングラード）に生まれ、生涯その地を離れることなく哲学を深め続けました。
+
+## コペルニクス的転回
+
+カントは認識の問題を根本から問い直しました。伝統的な哲学は「認識が対象に合わせる」と考えていましたが、カントはこれを逆転させました——**対象が認識の形式に合わせる**のです。
+
+これをカントは「コペルニクス的転回」と呼びます。時間・空間・因果といったカテゴリーは、外の世界から学ぶのではなく、私たちの認識能力が世界に投げかける**アプリオリ（先験的）な形式**です。
+
+## 現象と物自体
+
+私たちが認識できるのは**現象**（感性と悟性によって構成された世界）のみです。その背後にある**物自体**（Ding an sich）は、原理的に認識できません。
+
+これは懐疑論ではなく、認識の限界と可能性を同時に明確にする試みです。
+
+## 定言命法
+
+道徳においてカントは、感情や利益に基づく命令（仮言命法）を退け、**無条件に従うべき道徳の命令**を「定言命法」として定式化しました。
+
+その代表的な表現が「あなたの行為の格率が、同時に普遍的法則となりうるように行為せよ」です。
+
+カントにとって道徳的であることは、自分の理性によって自らに法則を与える**自律（Autonomie）**の実践です。`,
+    keyIdeas: asJson(["定言命法", "物自体", "アプリオリ", "自律", "コペルニクス的転回"]),
+    majorWorks: asJson(["『純粋理性批判』", "『実践理性批判』", "『道徳の形而上学の基礎づけ』"]),
+  },
 ];
 
 const themes = [
@@ -622,6 +659,82 @@ const articles = [
     publishedAt: at("2025-03-12T09:00:00.000Z"),
     themeSlugs: ["ontology", "self", "meaning-of-life"],
   },
+  {
+    id: "article-kant-critique",
+    slug: "kant-critique-of-pure-reason",
+    title: "私たちは世界を「ありのまま」に見ているのか——カントの認識論",
+    description: "カントの『純粋理性批判』を手がかりに、認識がどのように世界を構成するかという「コペルニクス的転回」を解説します。",
+    content: `# 認識は対象に合わせるのか、対象が認識に合わせるのか
+
+デカルト以来、哲学者たちは「いかにして私たちは外の世界を正確に知れるのか」を問い続けました。カントはこの問いを根本から組み替えます。
+
+## コペルニクス的転回
+
+カントの発想の転換は、天文学のコペルニクスに喩えられます。
+
+かつて天文学は「天が地球の周りを回る」と考えていました。コペルニクスはこれを逆転させ「地球が太陽の周りを回る」と主張しました。
+
+カントも同様に言います——認識が対象に合わせるのではなく、**対象が私たちの認識の形式に合わせる**のです。
+
+## アプリオリな形式
+
+私たちが世界を「時間の中に」「空間の中に」「原因と結果として」経験するのは、外の世界がそうなっているからではありません。それは**私たちの認識能力が世界に投げかける先験的（アプリオリ）な形式**です。
+
+時間・空間は感性の形式であり、因果・実体などのカテゴリーは悟性の形式です。これらがなければ、私たちは経験を統一的に把握できません。
+
+## 現象と物自体
+
+こうして私たちが認識できるのは、これらの形式を通じて構成された**現象**だけです。その背後にある**物自体**（Ding an sich）——ありのままの現実——は認識の届かない領域にあります。
+
+これは「何も知れない」という虚無主義ではありません。むしろ、**知識が成立する条件を明確にすること**によって、科学的認識の信頼性を根拠づけようとした試みです。`,
+    tag: "認識論",
+    readingTime: 8,
+    featured: true,
+    philosopherId: "phil-kant",
+    publishedAt: at("2025-03-20T09:00:00.000Z"),
+    themeSlugs: ["epistemology", "ontology"],
+  },
+  {
+    id: "article-kant-categorical-imperative",
+    slug: "kant-categorical-imperative",
+    title: "「普遍的法則となれるか」——カントの定言命法と自律の倫理学",
+    description: "カントの道徳哲学の中心「定言命法」を解説し、自律に基づく倫理とはどのようなものかを考えます。",
+    content: `# 感情や利益に頼らない道徳
+
+カントは、感情に基づく道徳や利益に基づく善意を根本的な道徳とは認めませんでした。なぜなら、感情も利益も状況によって変わりうるからです。
+
+では、どんな状況でも成立する道徳の根拠とは何でしょうか。
+
+## 仮言命法と定言命法
+
+カントは命令を二種類に分けます。
+
+**仮言命法**（hypothetical imperative）：「もし〜したいなら、〜せよ」という条件付きの命令。目的が変われば命令も変わります。
+
+**定言命法**（categorical imperative）：条件なしに従うべき命令。「〜せよ」とだけ言います。
+
+道徳的な命令は定言命法でなければならない、とカントは主張します。
+
+## 普遍化の定式
+
+定言命法の代表的な表現は次のとおりです。
+
+> あなたの行為の格率が、同時に普遍的な法則となりうるように行為せよ。
+
+「格率」とは、行為の主観的なルールです。自分の行動指針が、もし誰もが同様に行動したとしても矛盾が生じないか——これが道徳的かどうかの判断基準です。
+
+## 自律——自分の理性で法則を与える
+
+カントの倫理の核心は**自律（Autonomie）**です。道徳は外から与えられる規則ではなく、自分の理性が自分自身に与える法則です。
+
+他律（感情・権威・利益への従属）ではなく、理性による自律こそが道徳の本質です。`,
+    tag: "倫理学",
+    readingTime: 7,
+    featured: false,
+    philosopherId: "phil-kant",
+    publishedAt: at("2025-03-27T09:00:00.000Z"),
+    themeSlugs: ["ethics", "self"],
+  },
 ];
 
 const courses = [
@@ -890,6 +1003,56 @@ const courses = [
       },
     ],
   },
+  {
+    id: "course-kant-philosophy",
+    slug: "kant-philosophy",
+    number: 6,
+    title: "カントの批判哲学——認識と道徳の革命",
+    description: "『純粋理性批判』の認識論から『実践理性批判』の道徳論まで、カント哲学の核心を学ぶコース。",
+    difficulty: "advanced" as const,
+    estimatedMinutes: 60,
+    lessons: [
+      {
+        id: "lesson-kant-copernican",
+        slug: "kant-copernican",
+        number: 1,
+        title: "コペルニクス的転回",
+        description: "カントが認識論においてどのような革命を起こしたかを学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 認識が世界を構成する
+
+カントは「認識が対象に合わせる」という従来の考えを逆転させました。対象が私たちの認識の形式に合わせるのです。
+
+時間・空間は感性のアプリオリな形式であり、因果・実体などのカテゴリーは悟性のアプリオリな形式です。これらが経験を可能にしています。`,
+      },
+      {
+        id: "lesson-kant-phenomenon",
+        slug: "kant-phenomenon",
+        number: 2,
+        title: "現象と物自体",
+        description: "私たちが認識できる「現象」と、認識の届かない「物自体」の区別を学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 私たちは何を知れるのか
+
+カントによれば、認識できるのは感性と悟性の形式を通じて構成された**現象**だけです。
+
+その背後にある**物自体**（Ding an sich）は、原理的に認識不可能です。これは懐疑論ではなく、知識の条件を明確にすることで科学的認識を根拠づける試みです。`,
+      },
+      {
+        id: "lesson-kant-moral",
+        slug: "kant-moral",
+        number: 3,
+        title: "定言命法と自律",
+        description: "カントの道徳哲学における定言命法と自律の概念を学ぶ。",
+        estimatedMinutes: 20,
+        content: `# 条件なき道徳の命令
+
+カントは感情や利益に基づく道徳を退け、理性による無条件の命令——**定言命法**——を道徳の基礎とします。
+
+「あなたの行為の格率が普遍的法則となりうるように行為せよ」——これが自律の道徳です。外から与えられるのではなく、自分の理性が自分に与える法則に従うことが、真の道徳的行為です。`,
+      },
+    ],
+  },
 ];
 
 const quotes = [
@@ -952,6 +1115,18 @@ const quotes = [
     text: "死は、現存在が引き受けなければならない最も固有の可能性である。",
     source: "『存在と時間』",
     philosopherId: "phil-heidegger",
+  },
+  {
+    id: "quote-kant-1",
+    text: "二つのものが私の心をつねに新たな、ますます増大する驚きと畏敬で満たす。それは私の上なる星空と、私の内なる道徳法則とである。",
+    source: "『実践理性批判』",
+    philosopherId: "phil-kant",
+  },
+  {
+    id: "quote-kant-2",
+    text: "あなたの人格や他のすべての人の人格に宿る人間性を、つねに同時に目的として扱い、決して単なる手段としてのみ扱わないように行為せよ。",
+    source: "『道徳の形而上学の基礎づけ』",
+    philosopherId: "phil-kant",
   },
 ];
 
@@ -1081,6 +1256,33 @@ const glossaryTerms = [
     detail: "死への先駆的決意性によって開かれる生き方。非本来性（ひとの流れへの埋没）との対比で理解される。",
     philosopherId: "phil-heidegger",
     themeId: "theme-self",
+  },
+  {
+    id: "glossary-categorical-imperative",
+    term: "定言命法",
+    reading: "ていげんめいほう",
+    definition: "カントが定式化した、条件なしに従うべき道徳の命令。「あなたの行為の格率が普遍的法則となりうるように行為せよ」が代表的表現。",
+    detail: "仮言命法（条件付き命令）と対比される。感情や利益ではなく純粋な理性から導かれ、自律的な道徳行為の基礎となる。",
+    philosopherId: "phil-kant",
+    themeId: "theme-ethics",
+  },
+  {
+    id: "glossary-thing-in-itself",
+    term: "物自体",
+    reading: "ものじたい",
+    definition: "カントにおける、人間の認識能力の外にある現実そのもの。私たちは現象のみを認識でき、物自体には原理的に届かない。",
+    detail: "『純粋理性批判』の核心概念。現象（人間の認識形式を通じて構成されたもの）と物自体を区別することで、認識の可能性と限界を同時に確定する。",
+    philosopherId: "phil-kant",
+    themeId: "theme-epistemology",
+  },
+  {
+    id: "glossary-autonomy",
+    term: "自律",
+    reading: "じりつ",
+    definition: "外からの命令や感情・利益ではなく、自分の理性が自分に法則を与えること。カント倫理学の中心概念。",
+    detail: "他律（感情・権威・利益への従属）と対比される。道徳的行為は自律に基づく場合のみ真に道徳的とみなされる。",
+    philosopherId: "phil-kant",
+    themeId: "theme-ethics",
   },
 ];
 
@@ -1262,6 +1464,32 @@ async function seed() {
         { id: "quiz-au1-o4", text: "本能のままに自然な欲求に従って生きること", isCorrect: false, order: 4 },
       ],
     },
+    {
+      id: "quiz-kant-copernican-1",
+      lessonId: "lesson-kant-copernican",
+      question: "カントの「コペルニクス的転回」とはどのような発想を指しますか？",
+      explanation: "コペルニクス的転回とは、認識が対象に合わせるのではなく、対象が私たちの認識のアプリオリな形式に合わせるという発想です。",
+      order: 1,
+      options: [
+        { id: "quiz-kc1-o1", text: "天文学の理論を哲学に応用したこと", isCorrect: false, order: 1 },
+        { id: "quiz-kc1-o2", text: "認識が対象に合わせるのではなく、対象が認識の形式に合わせるという発想の転換", isCorrect: true, order: 2 },
+        { id: "quiz-kc1-o3", text: "道徳が宗教ではなく理性に基づくこと", isCorrect: false, order: 3 },
+        { id: "quiz-kc1-o4", text: "物自体が認識できるという主張", isCorrect: false, order: 4 },
+      ],
+    },
+    {
+      id: "quiz-kant-moral-1",
+      lessonId: "lesson-kant-moral",
+      question: "カントの定言命法の特徴として最も適切な説明はどれですか？",
+      explanation: "定言命法は感情や利益ではなく純粋な理性から導かれる無条件の道徳的命令です。普遍化可能性が判断基準になります。",
+      order: 1,
+      options: [
+        { id: "quiz-km1-o1", text: "最大多数の幸福を生む行為を指定する命令", isCorrect: false, order: 1 },
+        { id: "quiz-km1-o2", text: "純粋な理性から導かれる無条件の道徳的命令", isCorrect: true, order: 2 },
+        { id: "quiz-km1-o3", text: "幸福を得るために必要な条件付きの担事", isCorrect: false, order: 3 },
+        { id: "quiz-km1-o4", text: "宗教的権威に従って補完される道徳規範", isCorrect: false, order: 4 },
+      ],
+    },
   ];
 
   // 記事シリーズデータ
@@ -1305,6 +1533,16 @@ async function seed() {
       items: [
         { articleId: "article-heidegger-being-in-world", order: 1 },
         { articleId: "article-heidegger-death-authenticity", order: 2 },
+      ],
+    },
+    {
+      id: "series-kant",
+      slug: "kant-philosophy",
+      title: "カントの批判哲学を読む",
+      description: "認識論のコペルニクス的転回から定言命法による道徳哲学まで、カント哲学の全体像を追うシリーズ。",
+      items: [
+        { articleId: "article-kant-critique", order: 1 },
+        { articleId: "article-kant-categorical-imperative", order: 2 },
       ],
     },
   ];
